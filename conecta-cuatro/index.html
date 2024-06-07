@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles/styles.css">
+
+</head>
+<body>
+    <div id="avisocaja">
+        <div id="aviso">
+            <h1>Aviso</h1>
+            <p>
+                El juego de conecta cuatro es un juego de mesa en el que dos jugadores se enfrentan para
+                conectar cuatro fichas de su color en una línea horizontal, vertical o diagonal.
+            </p>
+            <p>
+                El jugador que consiga conectar cuatro fichas de su color gana la partida.
+            </p>
+            <div>
+                <span>Jugador 1</span><span>Jugador 2</span>
+            </div>
+            <div>
+                <img src="resources/click.png" alt="click"><img src="resources/keyboard.png" alt="teclado">
+            </div>
+            <button id="aceptar">Aceptar</button>
+        </div>
+    </div>
+    <div class="content">
+
+        <div class="banner">
+
+            <span class="name">JOSACA</span>
+
+            <config>Configuración</config>
+
+            <div class="config-player">
+
+                <div class="jugador1">
+                    <div id="recuadro-jugador1">
+                        J1
+                    </div>
+                    <div class="color-jugador1">
+                        Color J1:
+                        <input type="color" name="color1" id="color1">
+                    </div>
+                </div> <!-- jugador1 end-->
+
+                <div class="ajustes">
+                    <span>Tiempo</span>
+                    <span id="contador"></span>
+                    <button id="comenzar">Empezar partida</button>
+                </div> <!-- ajustes end-->
+
+                <div class="jugador2">
+                    <div id="recuadro-jugador2">
+                        J2
+                    </div>
+                    <div class="color-jugador2">
+                        Color J2:
+                        <input type="color" name="color2" id="color2">
+                    </div>
+                </div> <!-- jugador2 end-->
+
+            </div> <!-- config-player end-->
+
+        </div> <!-- banner end-->
+
+        <div class="juego">
+
+            <div id="info">
+                info
+            </div> <!-- info end-->
+
+            <div class="tableroflex">
+                <div class="tablero">
+                    
+                    <img class="tableroimg" src="resources/tablero.png" alt="tablero">
+                    
+                    <div id="game">
+                        <div class="a1 position"></div>
+                            <div class="b1 position"></div>
+                            <div class="c1 position"></div>
+                            <div class="d1 position"></div>
+                            <div class="e1 position"></div>
+                            <div class="f1 position"></div>
+                            <div class="g1 position"></div>
+                            <div class="a2 position"></div>
+                            <div class="b2 position"></div>
+                            <div class="c2 position"></div>
+                            <div class="d2 position"></div>
+                            <div class="e2 position"></div>
+                            <div class="f2 position"></div>
+                            <div class="g2 position"></div>
+                            <div class="a3 position"></div>
+                            <div class="b3 position"></div>
+                            <div class="c3 position"></div>
+                            <div class="d3 position"></div>
+                            <div class="e3 position"></div>
+                            <div class="f3 position"></div>
+                            <div class="g3 position"></div>
+                            <div class="a4 position"></div>
+                            <div class="b4 position"></div>
+                            <div class="c4 position"></div>
+                            <div class="d4 position"></div>
+                            <div class="e4 position"></div>
+                            <div class="f4 position"></div>
+                            <div class="g4 position"></div>
+                            <div class="a5 position"></div>
+                            <div class="b5 position"></div>
+                            <div class="c5 position"></div>
+                            <div class="d5 position"></div>
+                            <div class="e5 position"></div>
+                            <div class="f5 position"></div>
+                            <div class="g5 position"></div>
+                            <div class="a6 position"></div>
+                            <div class="b6 position"></div>
+                            <div class="c6 position"></div>
+                            <div class="d6 position"></div>
+                            <div class="e6 position"></div>
+                            <div class="f6 position"></div>
+                            <div class="g6 position"></div>
+                    </div>
+
+                </div> <!-- tablero end-->
+            </div>
+
+            
+
+        </div> <!-- juego end-->
+
+    </div> <!-- content end-->
+
+    <script src="scripts/javascript.js"></script>
+</body>
+</html>

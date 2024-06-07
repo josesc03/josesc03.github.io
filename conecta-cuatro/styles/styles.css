@@ -1,0 +1,261 @@
+html {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin: 0;
+    overflow: hidden;
+
+    margin-left: 15%;
+    margin-right: 15%;
+    background-color: black;
+}
+
+@media screen and (max-width: 970px) {
+    html {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    #comenzar {
+        width: 200px;
+    }
+}
+
+body {
+    background-color: white;
+    margin: 0;
+    background-color: #e5e5f7;
+    opacity: 0.8;
+    background-image: radial-gradient(#d3d3d3 1px, #e5e5f7 1px);
+    background-size: 10px 10px;
+}
+
+/* Aviso */
+
+#avisocaja {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#aviso {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+    margin: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 10px;
+    z-index: 1;
+    width: 700px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 10px white;
+
+
+&>div{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+}
+
+&>button {
+    margin-top: 25px;
+    max-height: 50px;
+    max-width: 100px;
+    min-height: 50px;
+    min-width: 100px;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    border: 0;
+    outline: 2px solid rgba(0, 0, 0, 0.30);
+    background-color: transparent;
+    color: white;
+    box-shadow: 0 0 10px white;
+    
+    &:hover {
+        font-weight: 600;
+        cursor: pointer;
+    }
+}
+}
+
+/* finAviso*/
+
+
+
+.banner {
+    background-color: #f5f5dc;
+    width: 100%;
+    height: fit-content;
+    border-bottom: grey solid 1px;
+
+    &>config {
+        display: block;
+        font-size: 30px;
+        font-weight: 500;
+        text-align: center;
+        margin: 0;
+        padding-top: 5px;
+        color: #808080;
+    }
+}
+
+.name {
+    display: block;
+    font-size: 20px;
+    text-align: center;
+    margin: 0;
+    padding-top: 5px;
+    color: #505050;
+    padding-top: 5px;
+
+    font-weight: 100;
+
+}
+
+.config-player {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: #f5f5dc;
+}
+
+.jugador1 {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    align-items: flex-start;
+
+    &>[class*="color-jugador1"] {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+        text-align: center;
+        padding: 3vw;
+        transform: translateY(1em);
+        
+        &>input[type="color" i] {
+            margin-top: 2vw;
+        }
+    }
+
+    &>[id="recuadro-jugador1"] {
+        outline: 3px solid #00ff00;
+        border-radius: 5px;
+        text-align: center;
+        padding: 4vw 4.5vw;
+        margin-left: 10px;
+    }
+}
+
+.jugador2 {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    align-items: flex-start;
+    flex-direction: row-reverse;
+
+    &>[class*="color-jugador2"] {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+        text-align: center;
+        padding: 3vw;
+        transform: translateY(1em);
+        
+        &>input[type="color" i] {
+            margin-top: 2vw;
+        }
+    }
+
+    &>[id="recuadro-jugador2"] {
+        outline: 3px solid #00ff00;
+        border-radius: 5px;
+        text-align: center;
+        padding: 4vw 4.5vw;
+        margin-right: 10px;
+    }
+}
+
+.ajustes {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &>button {
+        width: 20vw;
+        padding: 10px 20px;
+        font-size: larger;
+        margin-top: 10%;
+    }
+}
+
+.tablero {
+    margin-top: .7vw;
+    margin-bottom: 100%;
+    align-items: baseline;
+    position: relative;
+}
+
+.tableroimg {
+    width: 400px;
+    height: 400px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+#info {
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px;
+}
+
+#game {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    position: absolute;
+    left: 17px;
+    top: 26px;
+    gap: 6px;
+    row-gap: 13px;
+}
+
+.position {
+    width: 47px;
+    height: 47px;
+    background-color: transparent;
+    border-radius: 1000px;
+    box-shadow: inset 3px 3px 4px -3px rgba(0,0,0,0.66);
+}
+
+.tableroflex {
+    display: flex;
+    justify-content: center;
+}
