@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=VT323&display=swap');
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.content {
+    position: absolute;
+    display: grid;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.calculadora{
+    background-color: grey;
+    width: 400px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 25px;
+}
+
+.pantalla {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: end;
+    color: rgb(80, 117, 24);
+    font-family: "Press Start 2P", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    background-color: greenyellow;
+    row-gap: 15px;
+    width: 100%;
+    height: 100px;
+    border-radius: 10px;
+    border: 2px solid black;
+    box-sizing: border-box;
+
+    &>span {
+        margin-right: 15px;
+    }
+}
+
+.botones {
+    margin-top: 10px;
+    display: grid;
+    grid-template-areas: 
+    "1      2       3       4"
+    "5      6       7       8"
+    "9      10      11      12"
+    "13     14      15      equals"
+    "zero   zero    18      equals";
+    gap: 10px;
+    row-gap: 10px;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+}
+
+.boton {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;    
+
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.zero {
+    grid-area: zero;
+}
+
+.equals {
+    grid-area: equals;
+}
+
