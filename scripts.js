@@ -1,17 +1,44 @@
-document.addEventListener('scroll', function() {
-    var scrollPosition = window.scrollY;
+window.addEventListener("DOMContentLoaded", () => {
+    const carouselleftarrow = document.getElementById('leftarrow');
+    const carouselrightarrow = document.getElementById('rightarrow');
+    const slides = document.querySelectorAll('slide');
 
-    console.log(scrollPosition);
+    var active = document.querySelector('.active');
 
-    if (scrollPosition > 0) {
-        document.querySelector('header').style.backgroundColor = 'rgb(0, 0, 0, .2)';
-        document.querySelector('header').style.backdropFilter = 'blur(2px)';
-        document.querySelector('header').style.height = '50px';
-        document.querySelector('header').style.fontSize = '2vw';
-    } else {
-        document.querySelector('header').style.backgroundColor = '';
-        document.querySelector('header').style.backdropFilter = '';
-        document.querySelector('header').style.height = '';
-        document.querySelector('header').style.fontSize = '';
-    }
+    slides.forEach(element => {
+        console.log(element);
+    });
+
+    var currentIndex = 0;
+
+    carouselleftarrow.addEventListener('click', () => {
+        if (currentIndex > 0) {
+            slides[currentIndex].classList.toggle('active');
+            currentIndex--;
+            slides[currentIndex].classList.toggle('active');
+            active = document.querySelector('.active');
+            slides.forEach(element => {
+                element.style.translate = 'calc(-'+currentIndex+'00%'+')';
+        });
+        }
+    });
+
+    carouselrightarrow.addEventListener('click', () => {
+        if (currentIndex < slides.length -1) {
+            slides[currentIndex].classList.toggle('active');
+            currentIndex++;
+            slides[currentIndex].classList.toggle('active');
+            active = document.querySelector('.active');
+            slides.forEach(element => {
+                element.style.translate = 'calc(-'+currentIndex+'00%'+')';
+        });
+        }
+    });
+
+    setInterval( () => {
+        active.addEventListener('click', () => {
+            window.location.href = active.getAttribute('href');
+        })
+    }, 200);
+
 });
