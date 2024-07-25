@@ -131,7 +131,8 @@ main {
     overflow-y: scroll;
     overflow-x: hidden;
     scroll-behavior: smooth;
-
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
     
     &>nav>a>svg {
         display: none;
