@@ -220,11 +220,8 @@ main {
     .sidebar {
         display: none;
     }
-    name {
-        font-size: 20px !important;
-        top: 70% !important;
-    }
 }
+
 @media screen and (max-width: 367px) {
     main {
         &>nav>a {
@@ -311,33 +308,41 @@ carousel {
 
     #leftarrow {
         position: absolute;
-        top: 45%;
-        left: 40px;
+        left: 1%;
         transition: scale 0.2s ease-in-out;
         z-index: 2;
+        height: 100%;
+        filter: drop-shadow(0 0 1px black);
 
         &:hover {
             cursor: pointer;
-            animation: leftinfinite 0.3s alternate infinite;
-            scale: 1.2;
+            &>g{
+                animation: rightinfinite 0.3s alternate infinite;
+                scale: 1.3;
+            }
         }
     }
 
     #rightarrow {
         position: absolute;
-        top: 45%;
-        right: calc(75% + 40px);
+        right: 76%;
         transition: scale 0.2s ease-in-out;
         z-index: 2;
+        height: 97%;
+        translate: 0 1%;
+        filter: drop-shadow(0 0 1px black);
 
         &:hover {
             cursor: pointer;
-            animation: rightinfinite 0.3s alternate infinite;
-            scale: 1.2;
+            &>g{
+                cursor: pointer;
+                animation: rightinfinite 0.3s alternate infinite;
+                scale: 1.2;
+            }
         }
     }
 
-    }
+}
 
     @keyframes leftinfinite {
         from {
@@ -362,7 +367,7 @@ slide {
     display: block;
     width: 100%;
     filter: drop-shadow(0 0 3px black);
-    transition: all .3s ease-in-out;
+    transition: all .3s ease;
     padding: 5px;
 
     &.active {
@@ -371,7 +376,7 @@ slide {
     }
     
     &.active:hover {
-        scale: 1.1;
+        scale: 1.03;
         cursor: pointer;
     }
 
@@ -380,7 +385,7 @@ slide {
         border-radius: 15px;
     }
 
-    &>gradient{
+    &>panel{
         display: block;
         position: absolute;
         top: 5px;
@@ -388,15 +393,9 @@ slide {
         width: calc(100% - 10px);
         height: calc(100% - 10px);
         background-image: linear-gradient(0deg,
-        rgba(0,0,0, 1) 0%,
-        rgba(0,0,0, .88) 43%,
-        rgba(0,0,0, .79) 62%,
-        rgba(0,0,0, .69) 73%,
-        rgba(0,0,0, .59) 81%,
-        rgba(0,0,0, .48) 87%,
-        rgba(0,0,0, .36) 91%,
-        rgba(0,0,0, .25) 95%,
-        rgba(0,0,0, .12) 98%,
+        rgba(0,0,0, .8) 0%,
+        rgba(0,0,0, .8) 27%,
+        rgba(0,0,0, 0) 27%,
         rgba(0, 0, 0, 0) 100%
         );
         border-radius: 15px;
@@ -410,8 +409,54 @@ slide {
         width: 100%;
         text-align: center;
         font-weight: 600;
-        font-size: 25px;
+        font-size: 2vw;
         color: white;
     }
 }
 
+#contacto {
+    padding: 40px;
+    text-align: center;
+}
+
+.contact-cards {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.contact-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 50px;
+    background-color: transparent;
+    border-radius: 10px;
+    outline: 2px solid #d2d2d2;
+    text-decoration: none;
+    color: #d2d2d2;
+    transition: transform 0.3s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+    color: white;
+}
+
+.contact-card i {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.contact-card span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#tel:hover {
+    cursor: pointer;
+}

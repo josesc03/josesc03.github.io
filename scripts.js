@@ -41,4 +41,10 @@ window.addEventListener("DOMContentLoaded", () => {
         })
     }, 200);
 
+    const botontelefono = document.querySelector('#tel');
+
+    botontelefono.addEventListener('click', () => {
+        alert('No disponible. Disculpa las molestias.');
+    });
+
 });
