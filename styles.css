@@ -149,7 +149,7 @@ main {
     border-radius: 0 0 15px 15px;
 
     &>a {
-        border-left: 2px white solid;
+        border-left: 2px #d2d2d2 solid;
         padding: 0 10px;
         margin: 10px 0;
         display: inline-block;
