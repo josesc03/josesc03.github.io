@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etiquetas XAML Más Usadas</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <button class="mode-toggle" id="toggleMode">Modo Oscuro</button>
+    <div class="container">
+        <h1>Etiquetas XAML Más Usadas</h1>
+
+        <!-- Sección de Layouts -->
+        <div class="section">
+            <h2>Layouts (Contenedores)</h2>
+            <div class="highlight">
+                <p class="code-description">Ejemplo de <span class="tag">&lt;Grid&gt;</span>:</p>
+                <pre>
+&lt;Grid&gt;
+    &lt;Grid.RowDefinitions&gt;
+        &lt;RowDefinition Height="Auto" /&gt;
+        &lt;RowDefinition Height="*" /&gt;
+    &lt;/Grid.RowDefinitions&gt;
+    &lt;Grid.ColumnDefinitions&gt;
+        &lt;ColumnDefinition Width="Auto" /&gt;
+        &lt;ColumnDefinition Width="*" /&gt;
+    &lt;/Grid.ColumnDefinitions&gt;
+
+    &lt;Label Grid.Row="0" Grid.Column="0" Text="Etiqueta en Fila 0, Columna 0"/&gt;
+    &lt;Button Grid.Row="1" Grid.Column="1" Text="Botón en Fila 1, Columna 1"/&gt;
+&lt;/Grid&gt;
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">Ejemplo de <span class="tag">&lt;StackLayout&gt;</span>:</p>
+                <pre>
+&lt;StackLayout Orientation="Vertical"&gt;
+    &lt;Label Text="Primera etiqueta" FontSize="24" /&gt;
+    &lt;Button Text="Haz click aquí" /&gt;
+    &lt;Image Source="imagen.png" /&gt;
+&lt;/StackLayout&gt;
+                </pre>
+            </div>
+        </div>
+
+        <!-- Sección de Controles de Entrada y Visualización -->
+        <div class="section">
+            <h2>Controles de Entrada y Visualización</h2>
+            <div class="highlight">
+                <p class="code-description">Ejemplo de <span class="tag">&lt;Button&gt;</span>:</p>
+                <pre>
+&lt;Button Text="Pulsar aquí" BackgroundColor="LightBlue" TextColor="White"/&gt;
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">Ejemplo de <span class="tag">&lt;Label&gt;</span>:</p>
+                <pre>
+&lt;Label Text="Este es un texto simple" FontSize="20" TextColor="Black"/&gt;
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">Ejemplo de <span class="tag">&lt;Entry&gt;</span>:</p>
+                <pre>
+&lt;Entry Placeholder="Escribe algo aquí..." FontSize="18" TextColor="Gray"/&gt;
+                </pre>
+            </div>
+        </div>
+
+        <!-- Sección de Controles de Selección -->
+        <div class="section">
+            <h2>Controles de Selección</h2>
+            <div class="highlight">
+                <p class="code-description">Ejemplo de <span class="tag">&lt;Picker&gt;</span>:</p>
+                <pre>
+&lt;Picker Title="Selecciona una opción"&gt;
+    &lt;Picker.Items&gt;
+        &lt;x:String&gt;Opción 1&lt;/x:String&gt;
+        &lt;x:String&gt;Opción 2&lt;/x:String&gt;
+        &lt;x:String&gt;Opción 3&lt;/x:String&gt;
+    &lt;/Picker.Items&gt;
+&lt;/Picker&gt;
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">Ejemplo de <span class="tag">&lt;ListView&gt;</span>:</p>
+                <pre>
+&lt;ListView&gt;
+    &lt;ListView.Items&gt;
+        &lt;TextCell Text="Elemento 1" /&gt;
+        &lt;TextCell Text="Elemento 2" /&gt;
+        &lt;TextCell Text="Elemento 3" /&gt;
+    &lt;/ListView.Items&gt;
+&lt;/ListView&gt;
+                </pre>
+            </div>
+        </div>
+
+        <!-- Sección de Contenedores con Desplazamiento -->
+        <div class="section">
+            <h2>Contenedores con Desplazamiento (Scroll)</h2>
+            <div class="highlight">
+                <p class="code-description">Ejemplo de <span class="tag">&lt;ScrollView&gt;</span>:</p>
+                <pre>
+&lt;ScrollView&gt;
+    &lt;StackLayout&gt;
+        &lt;Label Text="Elemento desplazable 1"/&gt;
+        &lt;Label Text="Elemento desplazable 2"/&gt;
+        &lt;Label Text="Elemento desplazable 3"/&gt;
+        &lt;Label Text="Elemento desplazable 4"/&gt;
+        &lt;Label Text="Elemento desplazable 5"/&gt;
+    &lt;/StackLayout&gt;
+&lt;/ScrollView&gt;
+                </pre>
+            </div>
+        </div>
+
+        <!-- Seccion de atributos generales -->
+        <div class="section">
+            <h2>Atributos Generales de XAML</h2>
+
+            <div class="highlight">
+                <p class="code-description">Margin: Espacio exterior que define la separación entre el borde del elemento y otros elementos alrededor.</p>
+                <pre>
+&lt;Button Text="Botón" Margin="10,5,10,5"/&gt;
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">Padding: Espacio interior que define la separación entre el contenido del elemento y su borde.</p>
+                <pre>
+&lt;Button Text="Botón" Padding="10"/&gt;
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">Width: Define el ancho del elemento.</p>
+                <pre>
+&lt;Button Text="Botón" Width="200"/&gt;
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">Height: Define la altura del elemento.</p>
+                <pre>
+&lt;Button Text="Botón" Height="50"/&gt;
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">HorizontalAlignment: Define la alineación horizontal del elemento dentro de su contenedor.</p>
+                <pre>
+&lt;Button Text="Botón" HorizontalAlignment="Center"/&gt;
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">VerticalAlignment: Define la alineación vertical del elemento dentro de su contenedor.</p>
+                <pre>
+&lt;Button Text="Botón" VerticalAlignment="Top"/&gt;
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">Visibility: Define si un elemento es visible o no.</p>
+                <pre>
+&lt;Button Text="Botón" Visibility="Collapsed"/&gt;
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">Opacity: Define la transparencia del elemento.</p>
+                <pre>
+&lt;Button Text="Botón" Opacity="0.5"/&gt;
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">RenderTransform: Aplica una transformación visual a un elemento, como escalado o rotación.</p>
+                <pre>
+&lt;Button Text="Botón"&gt;
+    &lt;Button.RenderTransform&gt;
+        &lt;ScaleTransform ScaleX="1.5" ScaleY="1.5"/&gt;
+    &lt;/Button.RenderTransform&gt;
+&lt;/Button&gt;
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">ToolTip: Muestra un texto adicional cuando se pasa el ratón sobre el elemento.</p>
+                <pre>
+&lt;Button Text="Botón" ToolTip="Haz clic para realizar una acción"/&gt;
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">Cursor: Define el cursor que aparece cuando el ratón está sobre el elemento.</p>
+                <pre>
+&lt;Button Text="Botón" Cursor="Hand"/&gt;
+                </pre>
+            </div>
+        </div>
+
+        <!-- Sección de Eventos -->
+        <div class="section">
+            <h2>Eventos Más Usados</h2>
+            <div class="highlight">
+                <p class="code-description">Eventos más comunes de <span class="tag">&lt;Button&gt;</span>:</p>
+                <pre>
+1. Clicked: Se dispara cuando se hace clic en el botón.
+   &lt;Button Text="Botón" Clicked="OnButtonClicked"/&gt;
+
+2. Pressed: Se dispara cuando se presiona el botón.
+   &lt;Button Text="Botón" Pressed="OnButtonPressed"/&gt;
+
+3. Released: Se dispara cuando se suelta el botón.
+   &lt;Button Text="Botón" Released="OnButtonReleased"/&gt;
+                </pre>
+            </div>
+
+            <div class="cs-section">
+                <p class="code-description">Cómo manejar estos eventos en C#:</p>
+                <pre>
+// Método que se dispara al hacer clic en el botón
+void OnButtonClicked(object sender, EventArgs e) {
+    Console.WriteLine("Botón clicado");
+}
+
+// Método que se dispara al presionar el botón
+void OnButtonPressed(object sender, EventArgs e) {
+    Console.WriteLine("Botón presionado");
+}
+
+// Método que se dispara al soltar el botón
+void OnButtonReleased(object sender, EventArgs e) {
+    Console.WriteLine("Botón soltado");
+}
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">Eventos más comunes de <span class="tag">&lt;Entry&gt;</span>:</p>
+                <pre>
+1. TextChanged: Se dispara cuando el texto cambia.
+   &lt;Entry Text="Texto" TextChanged="OnTextChanged"/&gt;
+
+2. Completed: Se dispara cuando se completa la entrada.
+   &lt;Entry Completed="OnEntryCompleted"/&gt;
+                </pre>
+            </div>
+
+            <div class="cs-section">
+                <p class="code-description">Cómo manejar estos eventos en C#:</p>
+                <pre>
+// Método que se dispara cuando el texto cambia
+void OnTextChanged(object sender, TextChangedEventArgs e) {
+    Console.WriteLine("Texto cambiado a: " + e.NewTextValue);
+}
+
+// Método que se dispara al completar la entrada
+void OnEntryCompleted(object sender, EventArgs e) {
+    Console.WriteLine("Entrada completada");
+}
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">Eventos más comunes de <span class="tag">&lt;Picker&gt;</span>:</p>
+                <pre>
+1. SelectedIndexChanged: Se dispara cuando el índice seleccionado cambia.
+   &lt;Picker SelectedIndexChanged="OnPickerSelectedIndexChanged"/&gt;
+
+2. SelectedItemChanged: Se dispara cuando el ítem seleccionado cambia.
+   &lt;Picker SelectedItemChanged="OnPickerSelectedItemChanged"/&gt;
+                </pre>
+            </div>
+
+            <div class="cs-section">
+                <p class="code-description">Cómo manejar estos eventos en C#:</p>
+                <pre>
+// Método que se dispara al cambiar el índice seleccionado
+void OnPickerSelectedIndexChanged(object sender, EventArgs e) {
+    var picker = (Picker)sender;
+    Console.WriteLine("Índice seleccionado: " + picker.SelectedIndex);
+}
+
+// Método que se dispara al cambiar el ítem seleccionado
+void OnPickerSelectedItemChanged(object sender, EventArgs e) {
+    var picker = (Picker)sender;
+    Console.WriteLine("Ítem seleccionado: " + picker.SelectedItem);
+}
+                </pre>
+            </div>
+
+            <div class="highlight">
+                <p class="code-description">Eventos más comunes de <span class="tag">&lt;ListView&gt;</span>:</p>
+                <pre>
+1. ItemTapped: Se dispara cuando se toca un ítem en la lista.
+   &lt;ListView ItemTapped="OnListViewItemTapped"/&gt;
+
+2. ItemSelected: Se dispara cuando se selecciona un ítem.
+   &lt;ListView ItemSelected="OnListViewItemSelected"/&gt;
+                </pre>
+            </div>
+
+            <div class="cs-section">
+                <p class="code-description">Cómo manejar estos eventos en C#:</p>
+                <pre>
+// Método que se dispara al tocar un ítem en la lista
+void OnListViewItemTapped(object sender, ItemTappedEventArgs e) {
+    if (e.Item != null) {
+        Console.WriteLine("Ítem tocado: " + e.Item);
+    }
+}
+
+// Método que se dispara al seleccionar un ítem
+void OnListViewItemSelected(object sender, SelectedItemChangedEventArgs e) {
+    if (e.SelectedItem != null) {
+        Console.WriteLine("Ítem seleccionado: " + e.SelectedItem);
+    }
+}
+                </pre>
+            </div>
+        </div>
+
+        <!-- Sección de Explicación de x: -->
+        <div class="section">
+            <h2>Uso de x:</h2>
+            <div class="highlight">
+                <p class="code-description">
+                    El prefijo <code>x:</code> se utiliza en XAML para hacer referencia a tipos o elementos que pertenecen al espacio de nombres de XAML. Aquí hay algunos ejemplos comunes:
+                </p>
+                <ul>
+                    <li>
+                        <code>x:Name</code>: Asigna un nombre a un elemento para que se pueda referenciar en el código detrás.
+                        <pre>&lt;Label x:Name="lblmyLabel" Text="Hola Mundo"/&gt;</pre>
+                        En el código C#, puedes acceder al <code>Label</code> así:
+                        <pre>lblmyLabel.Text = "Nuevo Texto";</pre>
+                    </li>
+                    <li>
+                        <code>x:Key</code>: Se utiliza para definir una clave única en recursos (como estilos o plantillas).
+                        <pre>&lt;ResourceDictionary&gt;
+            &lt;Style x:Key="myButtonStyle" TargetType="Button"&gt;
+                &lt;Setter Property="BackgroundColor" Value="LightBlue"/&gt;
+            &lt;/Style&gt;
+        &lt;/ResourceDictionary&gt;</pre>
+                        Luego puedes usarlo así:
+                        <pre>myButton.Style = (Style)Resources["myButtonStyle"];</pre>
+                    </li>
+                    <li>
+                        <code>x:Static</code>: Permite acceder a un miembro estático de una clase.
+                        <pre>&lt;Label Text="{x:Static local:MiClase.MiPropiedad}"/&gt;</pre>
+                    </li>
+                    <li>
+                        <code>x:Type</code>: Se utiliza para referirse a un tipo en el espacio de nombres de XAML.
+                        <pre>&lt;Label Text="Tipo de objeto: {x:Type local:MiTipo}"/&gt;</pre>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+
+        <div class="footer">
+            <p>&copy; 2024 - Ejemplo de Etiquetas XAML</p>
+        </div>
+    </div>
+    <script>
+        const toggleModeButton = document.getElementById('toggleMode');
+        const codeDescription = document.querySelectorAll('.code-description');
+            
+        const body = document.body;
+
+        toggleModeButton.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            codeDescription.forEach(description => description.classList.toggle('text-dark-mode'));
+            toggleModeButton.textContent = body.classList.contains('dark-mode') ? 'Modo Claro' : 'Modo Oscuro';
+        });
+    </script>
+</body>
+</html>

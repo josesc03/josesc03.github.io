@@ -1,0 +1,111 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+h1 {
+    text-align: center;
+    color: #4CAF50;
+    margin-bottom: 40px;
+}
+
+h2 {
+    color: #2196F3;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.section {
+    margin-bottom: 40px;
+}
+
+pre {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.tag {
+    font-weight: bold;
+    color: #e91e63;
+}
+
+.code-description {
+    margin: 10px 0;
+    color: #555;
+}
+
+.highlight {
+    background-color: #e0f7fa;
+    border-left: 5px solid #00bcd4;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.cs-section {
+    background-color: #e8f5e9;
+    border-left: 5px solid #4CAF50;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    border-top: 1px solid #ddd;
+}
+
+.text-dark-mode {
+    color: #f4f4f9;
+}
+
+.dark-mode {
+    background-color: #333;
+    color: #f4f4f9;
+}
+
+.dark-mode pre {
+    background-color: #555;
+    color: #f4f4f9;
+}
+
+.dark-mode .highlight {
+    background-color: #006064;
+    border-left: 5px solid #00bcd4;
+}
+
+.dark-mode .cs-section {
+    background-color: #424242;
+    border-left: 5px solid #4CAF50;
+}
+
+.mode-toggle {
+    position: sticky;
+    top: 20px;
+    left: 90%;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.mode-toggle:hover {
+    background-color: #45a049;
+}
