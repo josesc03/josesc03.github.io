@@ -120,7 +120,8 @@
     Future< String > future = executor.submit(tarea);
     System.out.println(future.get());  // Obtener el resultado de la tarea
     
-    // Ejemplo básico de creacion de un CompletableFuture
+    // Usando CompletableFuture: tarea que devuelve un valor
+    // EL CALLABLE O RUNNABLE SE PONE DENTRO DEL COMPLETABLEFUTURE
     // Para runnables se usa runAsync() y para callables se usa supplyAsync()
     // Podemos crear un metodo fuera del Main para crear CompletableFuture< T > 
     public static CompletableFuture< T > compFuture(#parametros#) {
