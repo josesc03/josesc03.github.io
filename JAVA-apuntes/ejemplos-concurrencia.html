@@ -173,6 +173,64 @@ public class Main {
 }
 </code></pre>
 
+<table border="1" style="border-collapse: collapse; width: 100%;">
+    <thead>
+        <tr>
+            <th style="text-align: left; padding: 8px; background-color: #f2f2f2;">Aspecto</th>
+            <th style="text-align: left; padding: 8px; background-color: #f2f2f2;">Future</th>
+            <th style="text-align: left; padding: 8px; background-color: #f2f2f2;">CompletableFuture</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 8px;">**Definición**</td>
+            <td style="padding: 8px;">Interfaz utilizada para representar el resultado de una operación asíncrona, disponible en `java.util.concurrent`.</td>
+            <td style="padding: 8px;">Clase que extiende `Future` y `CompletionStage` para manejar operaciones asíncronas de manera más flexible.</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px;">**Disponibilidad**</td>
+            <td style="padding: 8px;">Disponible desde Java 5.</td>
+            <td style="padding: 8px;">Introducido en Java 8.</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px;">**Bloqueo**</td>
+            <td style="padding: 8px;">Usa métodos bloqueantes como `get()` para obtener el resultado.</td>
+            <td style="padding: 8px;">Permite manejar resultados de forma no bloqueante usando callbacks como `thenApply`, `thenAccept`, etc.</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px;">**Composición**</td>
+            <td style="padding: 8px;">No soporta encadenamiento de tareas.</td>
+            <td style="padding: 8px;">Soporta encadenamiento y combinación de tareas asíncronas mediante métodos como `thenCombine` o `thenCompose`.</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px;">**Cancelación**</td>
+            <td style="padding: 8px;">Puede ser cancelado usando `cancel()`.</td>
+            <td style="padding: 8px;">También soporta cancelación y además puede completarse manualmente con `complete()`.</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px;">**Uso típico**</td>
+            <td style="padding: 8px;">Se utiliza principalmente en aplicaciones que necesitan ejecutar tareas en un `ExecutorService`.</td>
+            <td style="padding: 8px;">Se utiliza en aplicaciones que requieren operaciones asíncronas y programación reactiva.</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px;">**Cómo se utiliza**</td>
+            <td style="padding: 8px;">
+                <pre>
+Future&lt;String&gt; future = executor.submit(() -> "Resultado");
+String resultado = future.get(); // Bloqueante
+                </pre>
+            </td>
+            <td style="padding: 8px;">
+                <pre>
+CompletableFuture&lt;String&gt; future = 
+    CompletableFuture.supplyAsync(() -> "Resultado");
+future.thenAccept(System.out::println); // No bloqueante
+                </pre>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
 <h2>RecursiveAction con ForkJoinPool</h2>
 <pre><code class="language-java">
 import java.util.concurrent.RecursiveAction;
