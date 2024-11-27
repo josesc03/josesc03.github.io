@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estados y Manejo de Hilos en Java</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/monokai.min.css" rel="stylesheet">
+    <script>hljs.highlightAll();</script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 25%;
+        }
+        h1, h2 {
+            color: #2C3E50;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+        code {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html"><button style="padding: 10px;border-radius: 10px;">Go back</button></a>
+
+    <h1>Estados y Manejo de Hilos en Java</h1>
+
+    <h2>1. Manejo básico de hilos: creación y lanzamiento</h2>
+
+    <h3>- Heredando de la clase Thread</h3>
+    <pre><code>
+class MiHilo extends Thread {
+    @Override
+    public void run() {
+        System.out.println("Hilo heredado de Thread en ejecución");
+    }
+}
+
+public class EjemploHilo {
+    public static void main(String[] args) {
+        MiHilo hilo = new MiHilo();
+        hilo.start(); // Esto lanza el hilo
+    }
+}
+    </code></pre>
+    <p>Al heredar de <code>Thread</code>, estamos creando una nueva clase de hilo, y al invocar <code>start()</code>, el hilo comienza a ejecutarse. Esto es diferente de implementar la interfaz <code>Runnable</code>, donde no necesitamos heredar de <code>Thread</code>.</p>
+
+    <h3>- Implementando la interfaz Runnable</h3>
+    <pre><code>
+class MiRunnable implements Runnable {
+    @Override
+    public void run() {
+        System.out.println("Hilo implementando Runnable en ejecución");
+    }
+}
+
+public class EjemploRunnable {
+    public static void main(String[] args) {
+        MiRunnable miRunnable = new MiRunnable();
+        Thread hilo = new Thread(miRunnable);
+        hilo.start(); // Esto lanza el hilo
+    }
+}
+    </code></pre>
+    <p>Al implementar <code>Runnable</code>, la clase no hereda de <code>Thread</code>, sino que se pasa a un objeto <code>Thread</code> para ejecutarlo. Esto es útil cuando ya estamos extendiendo otra clase.</p>
+
+    <h2>2. Información básica de los hilos</h2>
+
+    <h3>- Cómo configurar y obtener el nombre del hilo</h3>
+    <pre><code>
+class MiHiloConNombre extends Thread {
+    @Override
+    public void run() {
+        System.out.println("El nombre del hilo es: " + Thread.currentThread().getName());
+    }
+}
+
+public class EjemploNombreHilo {
+    public static void main(String[] args) {
+        MiHiloConNombre hilo = new MiHiloConNombre();
+        hilo.setName("MiPrimerHilo");
+        hilo.start(); // Esto lanza el hilo con el nombre configurado
+    }
+}
+    </code></pre>
+    <p>Usamos <code>setName()</code> para configurar el nombre del hilo y <code>Thread.currentThread().getName()</code> para obtenerlo.</p>
+
+    <h3>- Cómo obtener el estado del hilo</h3>
+    <pre><code>
+class MiHiloEstado extends Thread {
+    @Override
+    public void run() {
+        System.out.println("El estado del hilo es: " + getState());
+    }
+}
+
+public class EjemploEstadoHilo {
+    public static void main(String[] args) throws InterruptedException {
+        MiHiloEstado hilo = new MiHiloEstado();
+        System.out.println("Antes de iniciar: " + hilo.getState());
+        hilo.start();
+        hilo.join(); // Espera a que el hilo termine
+        System.out.println("Después de terminar: " + hilo.getState());
+    }
+}
+    </code></pre>
+    <p>El estado de un hilo puede ser consultado usando <code>getState()</code>, que devuelve un valor del tipo <code>Thread.State</code> (NEW, RUNNABLE, TERMINATED, etc.).</p>
+
+    <h3>- Cómo obtener el identificador de un hilo</h3>
+    <pre><code>
+class MiHiloIdentificador extends Thread {
+    @Override
+    public void run() {
+        System.out.println("El ID del hilo es: " + getId());
+    }
+}
+
+public class EjemploIdHilo {
+    public static void main(String[] args) {
+        MiHiloIdentificador hilo = new MiHiloIdentificador();
+        hilo.start();
+    }
+}
+    </code></pre>
+    <p>El identificador único de cada hilo se puede obtener usando el método <code>getId()</code>.</p>
+
+    <h2>3. Los métodos sleep y yield</h2>
+    <h3>- sleep</h3>
+    <pre><code>
+class MiHiloSleep extends Thread {
+    @Override
+    public void run() {
+        try {
+            System.out.println("Hilo durmiendo...");
+            Thread.sleep(2000); // El hilo duerme por 2 segundos
+            System.out.println("Hilo despertado");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+public class EjemploSleep {
+    public static void main(String[] args) {
+        MiHiloSleep hilo = new MiHiloSleep();
+        hilo.start();
+    }
+}
+    </code></pre>
+    <p><code>sleep()</code> pone el hilo en pausa durante el tiempo especificado. Puede ser interrumpido si se invoca <code>interrupt()</code>.</p>
+
+    <h3>- yield</h3>
+    <pre><code>
+class MiHiloYield extends Thread {
+    @Override
+    public void run() {
+        System.out.println("Hilo en ejecución...");
+        Thread.yield(); // Cede el control al sistema operativo
+        System.out.println("Hilo continúa");
+    }
+}
+
+public class EjemploYield {
+    public static void main(String[] args) {
+        MiHiloYield hilo = new MiHiloYield();
+        hilo.start();
+    }
+}
+    </code></pre>
+    <p><code>yield()</code> permite que el hilo actual ceda el control al sistema operativo para que otro hilo se ejecute.</p>
+
+    <h2>4. Finalización e interrupción de hilos</h2>
+
+    <h3>- Flags</h3>
+    <pre><code>
+class MiHiloConFlag extends Thread {
+    private boolean flag = false;
+
+    @Override
+    public void run() {
+        while (!flag) {
+            System.out.println("Hilo ejecutándose...");
+        }
+        System.out.println("Hilo detenido por flag");
+    }
+
+    public void stopThread() {
+        flag = true;
+    }
+}
+
+public class EjemploFlag {
+    public static void main(String[] args) throws InterruptedException {
+        MiHiloConFlag hilo = new MiHiloConFlag();
+        hilo.start();
+        Thread.sleep(1000);
+        hilo.stopThread(); // Detiene el hilo usando el flag
+    }
+}
+    </code></pre>
+    <p>Utilizamos una bandera booleana para indicar cuando un hilo debe detenerse, lo que es más seguro que detenerlo abruptamente.</p>
+
+    <h3>- Interrupciones (.isInterrupted())</h3>
+    <pre><code>
+class MiHiloInterrumpido extends Thread {
+    @Override
+    public void run() {
+        while (!isInterrupted()) {
+            System.out.println("Hilo ejecutándose...");
+        }
+        System.out.println("Hilo interrumpido");
+    }
+}
+
+public class EjemploInterrupcion {
+    public static void main(String[] args) throws InterruptedException {
+        MiHiloInterrumpido hilo = new MiHiloInterrumpido();
+        hilo.start();
+        Thread.sleep(1000);
+        hilo.interrupt(); // Interrumpe el hilo
+    }
+}
+    </code></pre>
+    <p>La interrupción se maneja con <code>isInterrupted()</code>, y puede ser solicitada usando <code>interrupt()</code>.</p>
+
+    <h2>5. Coordinación básica. Unión de hilos (.join())</h2>
+    <pre><code>
+class MiHiloConJoin extends Thread {
+    @Override
+    public void run() {
+        System.out.println("Hilo en ejecución...");
+    }
+}
+
+public class EjemploJoin {
+    public static void main(String[] args) throws InterruptedException {
+        MiHiloConJoin hilo1 = new MiHiloConJoin();
+        MiHiloConJoin hilo2 = new MiHiloConJoin();
+        hilo1.start();
+        hilo2.start();
+        hilo1.join(); // Espera a que hilo1 termine
+        hilo2.join(); // Espera a que hilo2 termine
+        System.out.println("Ambos hilos han terminado");
+    }
+}
+    </code></pre>
+    <p>El método <code>join()</code> hace que el hilo principal espere a que el hilo en cuestión termine antes de continuar.</p>
+
+    <h2>6. Recursos compartidos entre hilos</h2>
+
+    <h3>- Métodos de sincronización (uso de synchronized en métodos de clases con recursos compartidos)</h3>
+    <pre><code>
+class MiHiloSincronizado extends Thread {
+    private static int contador = 0;
+
+    @Override
+    public void run() {
+        synchronized (MiHiloSincronizado.class) {
+            contador++;
+            System.out.println("Contador: " + contador);
+        }
+    }
+}
+
+public class EjemploSincronizado {
+    public static void main(String[] args) throws InterruptedException {
+        MiHiloSincronizado hilo1 = new MiHiloSincronizado();
+        MiHiloSincronizado hilo2 = new MiHiloSincronizado();
+        hilo1.start();
+        hilo2.start();
+    }
+}
+    </code></pre>
+    <p>Utilizamos <code>synchronized</code> para evitar que múltiples hilos accedan simultáneamente al recurso compartido, en este caso, el contador.</p>
+
+    <h2>7. Sincronización de objetos (sincronización específica en bloque)</h2>
+    <pre><code>
+class MiHiloBloque extends Thread {
+    private static final Object lock = new Object();
+
+    @Override
+    public void run() {
+        synchronized (lock) {
+            System.out.println("Hilo sincronizado con un objeto específico");
+        }
+    }
+}
+
+public class EjemploBloque {
+    public static void main(String[] args) {
+        MiHiloBloque hilo1 = new MiHiloBloque();
+        MiHiloBloque hilo2 = new MiHiloBloque();
+        hilo1.start();
+        hilo2.start();
+    }
+}
+    </code></pre>
+    <p>Podemos sincronizar bloques de código específicos usando un objeto de bloqueo, lo cual permite controlar el acceso a secciones críticas de código.</p>
+
+    <h2>8. Prioridades de los hilos (.setPriority)</h2>
+    <pre><code>
+class MiHiloPrioridad extends Thread {
+    @Override
+    public void run() {
+        System.out.println("Hilo en ejecución con prioridad " + getPriority());
+    }
+}
+
+public class EjemploPrioridad {
+    public static void main(String[] args) {
+        MiHiloPrioridad hilo1 = new MiHiloPrioridad();
+        hilo1.setPriority(Thread.MAX_PRIORITY); // Máxima prioridad
+        hilo1.start();
+    }
+}
+    </code></pre>
+    <p><code>setPriority()</code> establece la prioridad del hilo, lo que puede influir en el orden en que el sistema operativo asigna tiempo de CPU a los hilos.</p>
+
+    <h2>9. El problema productor-consumidor (uso de wait, notify y notifyAll)</h2>
+    <pre><code>
+class Almacen {
+    private int capacidad = 10;
+    private int cantidad = 0;
+
+    public synchronized void producir() throws InterruptedException {
+        while (cantidad == capacidad) {
+            wait(); // Espera a que haya espacio
+        }
+        cantidad++;
+        System.out.println("Producido. Cantidad: " + cantidad);
+        notifyAll(); // Notifica a los consumidores
+    }
+
+    public synchronized void consumir() throws InterruptedException {
+        while (cantidad == 0) {
+            wait(); // Espera a que haya elementos
+        }
+        cantidad--;
+        System.out.println("Consumido. Cantidad: " + cantidad);
+        notifyAll(); // Notifica a los productores
+    }
+}
+
+public class EjemploProductorConsumidor {
+    public static void main(String[] args) throws InterruptedException {
+        Almacen almacen = new Almacen();
+        Thread productor = new Thread(() -> {
+            try {
+                almacen.producir();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        Thread consumidor = new Thread(() -> {
+            try {
+                almacen.consumir();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        productor.start();
+        consumidor.start();
+    }
+}
+    </code></pre>
+    <p>En el problema productor-consumidor, <code>wait()</code> y <code>notify()</code> permiten coordinar la producción y consumo de recursos en un espacio compartido.</p>
+
+</body>
+</html>

@@ -55,14 +55,16 @@ body {
 h1 {
     margin: 0;
     width: fit-content;
-    font-size: 50px;
+    font-size: 2rem;
 }
 
 h2 {
     margin: 0;
     width: fit-content;
-    margin-bottom: 25px;
+    margin-bottom: 1rem;
     color: rgb(205, 255, 220);
+    font-size: 1rem;
+
 
 }
 
@@ -70,7 +72,7 @@ h2 {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    margin-bottom: 40px;
+    margin-bottom: 1.5rem;
 }
 
 .redes {

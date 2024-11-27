@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Métodos de Clases en Java</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/monokai.min.css" rel="stylesheet">
+    <script>hljs.highlightAll();</script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 20%;
+        }
+        h1, h2 {
+            color: #2C3E50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+        code {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html"><button style="padding: 10px;border-radius: 10px;">Go back</button></a>
+
+    <h1>Métodos de la clase Runtime</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Método</th>
+                <th>Funcionalidad</th>
+                <th>Ejemplo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Runtime getRuntime()</td>
+                <td>Devuelve el objeto Runtime asociado a la aplicación Java actual. Es un método estático.</td>
+                <td>
+                    <pre><code>
+Runtime runtime = Runtime.getRuntime();
+System.out.println("Máxima memoria disponible: " + runtime.maxMemory());
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>Process exec(String command)</td>
+                <td>Ejecuta un comando. Existen otros constructores sobrecargados.</td>
+                <td>
+                    <pre><code>
+try {
+    Process process = Runtime.getRuntime().exec("notepad");
+} catch (IOException e) {
+    e.printStackTrace();
+}
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>void exit(int status)</td>
+                <td>Termina la ejecución de forma ordenada.</td>
+                <td>
+                    <pre><code>
+System.exit(0); // Termina el programa sin errores
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>void halt(int status)</td>
+                <td>Termina la ejecución de forma abrupta.</td>
+                <td>
+                    <pre><code>
+Runtime.getRuntime().halt(1); // Termina el programa de forma abrupta
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>int availableProcessors()</td>
+                <td>Devuelve el número de procesadores disponibles para la JVM.</td>
+                <td>
+                    <pre><code>
+int processors = Runtime.getRuntime().availableProcessors();
+System.out.println("Procesadores disponibles: " + processors);
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>long freeMemory()</td>
+                <td>Devuelve la cantidad de memoria disponible para la JVM.</td>
+                <td>
+                    <pre><code>
+long freeMemory = Runtime.getRuntime().freeMemory();
+System.out.println("Memoria libre: " + freeMemory);
+                    </code></pre>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h1>Métodos de la clase ProcessBuilder</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Método</th>
+                <th>Funcionalidad</th>
+                <th>Ejemplo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>ProcessBuilder(String comando)</td>
+                <td>Construye un objeto ProcessBuilder para el comando pasado por parámetro.</td>
+                <td>
+                    <pre><code>
+ProcessBuilder builder = new ProcessBuilder("notepad");
+builder.start(); // Inicia el proceso de abrir el bloc de notas
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>ProcessBuilder directory(File directorio)</td>
+                <td>Establece el directorio de trabajo del proceso.</td>
+                <td>
+                    <pre><code>
+File dir = new File("C:\\");
+ProcessBuilder builder = new ProcessBuilder("dir");
+builder.directory(dir);
+builder.start();
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>File directory()</td>
+                <td>Devuelve el directorio de trabajo del proceso.</td>
+                <td>
+                    <pre><code>
+ProcessBuilder builder = new ProcessBuilder();
+System.out.println("Directorio de trabajo: " + builder.directory());
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>Map<String, String> environment()</td>
+                <td>Devuelve el entorno de trabajo a través de una lista de asignación de valores.</td>
+                <td>
+                    <pre><code>
+ProcessBuilder builder = new ProcessBuilder();
+Map<String, String> environment = builder.environment();
+environment.put("MY_VAR", "my_value");
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>Process start()</td>
+                <td>Crea e inicia un proceso.</td>
+                <td>
+                    <pre><code>
+ProcessBuilder builder = new ProcessBuilder("ping", "google.com");
+Process process = builder.start(); // Inicia el proceso de ping
+                    </code></pre>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h1>Métodos de la clase Process</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Método</th>
+                <th>Funcionalidad</th>
+                <th>Ejemplo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>void destroy()</td>
+                <td>Termina el proceso de forma limpia.</td>
+                <td>
+                    <pre><code>
+Process process = new ProcessBuilder("notepad").start();
+process.destroy(); // Termina el proceso
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>public Process destroyForcibly()</td>
+                <td>Termina el proceso de forma abrupta.</td>
+                <td>
+                    <pre><code>
+Process process = new ProcessBuilder("notepad").start();
+process.destroyForcibly(); // Termina el proceso de forma abrupta
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>int exitValue()</td>
+                <td>Devuelve el valor de salida del proceso.</td>
+                <td>
+                    <pre><code>
+Process process = new ProcessBuilder("ping", "google.com").start();
+int exitValue = process.waitFor(); // Espera a que el proceso termine
+System.out.println("Valor de salida: " + exitValue);
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>ProcessHandle.Info info()</td>
+                <td>Devuelve la información actual del proceso.</td>
+                <td>
+                    <pre><code>
+Process process = new ProcessBuilder("ping", "google.com").start();
+ProcessHandle.Info info = process.info();
+System.out.println("Info del proceso: " + info.command());
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>boolean isAlive()</td>
+                <td>Comprueba si el proceso está vivo.</td>
+                <td>
+                    <pre><code>
+Process process = new ProcessBuilder("ping", "google.com").start();
+System.out.println("¿El proceso está vivo? " + process.isAlive());
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>long pid()</td>
+                <td>Devuelve el PID o identificador del proceso.</td>
+                <td>
+                    <pre><code>
+Process process = new ProcessBuilder("ping", "google.com").start();
+System.out.println("PID del proceso: " + process.pid());
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>int waitFor()</td>
+                <td>Hace que el hilo espere hasta que el proceso haya terminado.</td>
+                <td>
+                    <pre><code>
+Process process = new ProcessBuilder("ping", "google.com").start();
+int exitCode = process.waitFor();
+System.out.println("Proceso terminado con código de salida: " + exitCode);
+                    </code></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>boolean waitFor(long timeout, TimeUnit unit)</td>
+                <td>Hace que el hilo espere hasta que el proceso haya terminado durante un tiempo.</td>
+                <td>
+                    <pre><code>
+Process process = new ProcessBuilder("ping", "google.com").start();
+boolean finished = process.waitFor(5, TimeUnit.SECONDS);
+System.out.println("¿Terminó dentro del tiempo? " + finished);
+                    </code></pre>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h1>Obtener salida de un proceso de consola</h1>
+    <p>Hay ocasiones en que lanzaremos un proceso, como por ejemplo un comando de la consola, y no obtendremos salida o resultado. Para capturar la salida, debes redirigirla de la siguiente manera:</p>
+    <pre><code>
+try {
+    Process process = new ProcessBuilder("ping", "google.com").start();
+    BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+    String line;
+    while ((line = input.readLine()) != null) {
+        System.out.println(line); // Imprime la salida del comando
+    }
+    input.close();
+} catch (IOException e) {
+    e.printStackTrace();
+}
+    </code></pre>
+
+    <h2>Comando para Windows</h2>
+    <pre><code>
+        // Ejecuta el comando 'dir' para listar los archivos en el directorio actual
+        Process process = Runtime.getRuntime().exec("cmd /c dir");
+    </code></pre>
+
+    <h2>Comando para Linux</h2>
+    <pre><code>
+        // Ejecuta el comando 'ls' para listar los archivos en el directorio actual
+        Process process = Runtime.getRuntime().exec("ls");
+    </code></pre>
+
+    <h2>Condicional de sistemas operativos</h2>
+    <pre><code>
+        import java.io.IOException;
+        
+        public class OSProcessExample {
+            public static void main(String[] args) {
+                try {
+                    String os = System.getProperty("os.name").toLowerCase();  // Obtener el nombre del sistema operativo
+                    
+                    ProcessBuilder builder;
+                    if (os.contains("win")) {
+                        // Si es Windows, ejecutamos el comando "notepad"
+                        builder = new ProcessBuilder("notepad");
+                    } else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
+                        // Si es Linux o MacOS, ejecutamos el comando "gedit"
+                        builder = new ProcessBuilder("gedit");
+                    } else {
+                        System.out.println("Sistema operativo no soportado");
+                        return;
+                    }
+        
+                    // Iniciar el proceso
+                    builder.start();
+                    
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        </code></pre>
+        
+
+</body>
+</html>

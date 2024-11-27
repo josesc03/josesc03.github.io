@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indice U1 y U2</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/monokai.min.css" rel="stylesheet">
+    <script>hljs.highlightAll();</script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 25%;
+        }
+        h1, h2 {
+            color: #2C3E50;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+        code {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Indice procesos</h1>
+    <a href="procesos.html"><button style="padding: 10px;border-radius: 10px;">Procesos</button></a>
+
+    <h1>Indice hilos</h1>
+    <div style="display: flex;">
+        <a style="margin-right: 10px" href="gestion-sincronizacion-coordinacion-hilos.html"><button style="padding: 10px;border-radius: 10px;">Gestion y sincronizacion</button></a>
+        <a style="margin-right: 10px" href="ejemplos-concurrencia.html"><button style="padding: 10px;border-radius: 10px;">Ejemplos de concurrencia</button></a>
+    </div>
+    <h1>Ejemplo de BufferedReader</h1>
+    <h2>Para escribir (como Scanner)</h2>
+    <pre><code>
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
+public class Main {
+    public static void main(String[] args) {
+        // Crear el BufferedReader para leer desde la consola
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        try {
+            // Solicitar al usuario que ingrese un texto
+            System.out.print("Escribe algo: ");
+            String entrada = reader.readLine();
+
+            // Mostrar lo que el usuario escribió
+            System.out.println("Lo que escribiste: " + entrada);
+        } catch (IOException e) {
+            System.out.println("Hubo un error al leer la entrada.");
+        } finally {
+            try {
+                // Cerrar el BufferedReader
+                reader.close();
+            } catch (IOException e) {
+                System.out.println("Error al cerrar el BufferedReader.");
+            }
+        }
+    }
+}
+
+    </code></pre>
+
+    <h2>Para archivos en la carpeta resources</h2>
+    <pre><code>
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.IOException;
+
+public class Main {
+    public static void main(String[] args) {
+        // Obtener el archivo desde la carpeta resources
+        InputStream inputStream = Main.class.getResourceAsStream("/miarchivo.txt");
+
+        // Verificar que el archivo se ha encontrado
+        if (inputStream == null) {
+            System.out.println("El archivo no se encontró.");
+            return;
+        }
+
+        // Leer el archivo usando BufferedReader
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+    </code></pre>
+
+    <h2>Como crear la carpeta de resources en inteliJ</h2>
+    <img src="resources/proyectStructure.png" alt="proyectStructure" style="height: 400px; width:min-content;">
+    <p>Vamos a File | Proyect Structure</p>
+    <img src="resources/markAsAResourceRoot.png" alt="markasresourceroot" style="height: 400px; width:min-content;">
+    <p>Seleccionamos la carpeta y la ponermos como Resource Root</p>
+</body>
+</html>

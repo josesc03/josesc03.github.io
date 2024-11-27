@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diferencias y Ejemplos de Concurrencia en Java</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/monokai.min.css" rel="stylesheet">
+    <script>hljs.highlightAll();</script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 20%;
+        }
+        h1, h2 {
+            color: #2C3E50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+        code {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html"><button style="padding: 10px;border-radius: 10px;">Go back</button></a>
+
+
+<h1>Diferencias y Ejemplos de Concurrencia en Java</h1>
+
+<h2>Thread con Executor</h2>
+<pre><code class="language-java">
+import java.util.concurrent.Executor;
+
+public class MiExecutor implements Executor {
+    @Override
+    public void execute(Runnable command) {
+        // Aquí en lugar de iniciar un hilo manualmente, usamos el Executor para ejecutarlo
+        new Thread(command).start();  // En un enfoque más clásico, usaríamos 'new Thread(...)' directamente
+    }
+
+    public static void main(String[] args) {
+        // Crear un executor personalizado que ejecuta tareas en nuevos hilos
+        MiExecutor executor = new MiExecutor();
+        executor.execute(() -> System.out.println("Ejecutando tarea con Thread y Executor."));
+    }
+}
+</code></pre>
+
+<h2>Callable con ExecutorService</h2>
+<pre><code class="language-java">
+import java.util.concurrent.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        // Crear un ExecutorService con un solo hilo
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<String> tarea = () -> "Resultado del Callable con ExecutorService.";  // Tarea que devuelve un resultado
+        
+        // Usamos submit en lugar de execute porque queremos obtener un valor de vuelta
+        Future<String> future = executor.submit(tarea);  // Aquí, 'submit' devuelve un Future para obtener el resultado
+        System.out.println(future.get());  // Obtener el resultado de la tarea
+
+        executor.shutdown();  // Finaliza el ExecutorService después de ejecutar la tarea
+    }
+}
+</code></pre>
+
+<h2>invokeAll y otros métodos ejecutores</h2>
+<pre><code class="language-java">
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        // Crear un ExecutorService con un pool de hilos
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        List<Callable<String>> tareas = Arrays.asList(
+            () -> "Tarea 1",
+            () -> "Tarea 2"
+        );
+
+        // Usando invokeAll: ejecuta todas las tareas y espera a que todas terminen
+        // Esto es diferente a 'submit' porque 'invokeAll' espera a que todas las tareas terminen antes de continuar
+        executor.invokeAll(tareas).forEach(futuro -> {
+            try {
+                System.out.println(futuro.get());  // Obtener el resultado de cada tarea
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        // Usando invokeAny: ejecuta las tareas y obtiene el resultado de la primera que termine
+        // Esto es útil si solo necesitas el primer resultado disponible
+        String resultado = executor.invokeAny(tareas);
+        System.out.println("Resultado de invokeAny: " + resultado);
+
+        executor.shutdown();
+    }
+}
+</code></pre>
+
+<h2>Runnable con execute y ExecutorService</h2>
+<pre><code class="language-java">
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class Main {
+    public static void main(String[] args) {
+        // Crear un ExecutorService con un pool de hilos
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        executor.execute(() -> System.out.println("Tarea 1 ejecutada con execute."));  // Ejecutar tarea 1
+        executor.execute(() -> System.out.println("Tarea 2 ejecutada con execute."));  // Ejecutar tarea 2
+        executor.shutdown();  // Finaliza el ExecutorService después de ejecutar las tareas
+    }
+}
+</code></pre>
+
+<h2>Future y CompletableFuture</h2>
+<pre><code class="language-java">
+import java.util.concurrent.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        // Usando Future: tarea que devuelve un valor
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<String> tarea = () -> "Resultado con Future.";
+        Future<String> future = executor.submit(tarea);
+        System.out.println(future.get());  // Obtener el resultado de la tarea
+        
+        // Usando CompletableFuture: permite tareas asincrónicas con más flexibilidad
+        // CompletableFuture es más flexible, ya que permite encadenar acciones adicionales
+        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> "Resultado con CompletableFuture.");
+        System.out.println(completableFuture.get());  // Obtener el resultado
+
+        executor.shutdown();  // Finaliza el ExecutorService después de ejecutar la tarea
+    }
+}
+</code></pre>
+
+<h2>RecursiveAction con ForkJoinPool</h2>
+<pre><code class="language-java">
+import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.ForkJoinPool;
+
+public class MiRecursiveAction extends RecursiveAction {
+    private int tarea;
+
+    public MiRecursiveAction(int tarea) {
+        this.tarea = tarea;
+    }
+
+    @Override
+    protected void compute() {
+        if (tarea <= 10) {
+            // Caso base: ejecutar tarea simple
+            System.out.println("Ejecutando tarea pequeña: " + tarea);
+        } else {
+            // Caso recursivo: dividir la tarea en dos subtareas
+            MiRecursiveAction subTask1 = new MiRecursiveAction(tarea / 2);
+            MiRecursiveAction subTask2 = new MiRecursiveAction(tarea / 2);
+            subTask1.fork();  // Ejecutar la primera subtarea en paralelo
+            subTask2.fork();  // Ejecutar la segunda subtarea en paralelo
+            subTask1.join();  // Esperar que termine la primera subtarea
+            subTask2.join();  // Esperar que termine la segunda subtarea
+        }
+    }
+
+    public static void main(String[] args) {
+        // Crear un ForkJoinPool para ejecutar tareas recursivas
+        ForkJoinPool pool = new ForkJoinPool();
+        MiRecursiveAction action = new MiRecursiveAction(20);
+        pool.invoke(action);  // Ejecutar la tarea principal
+    }
+}
+</code></pre>
+
+<h2>RecursiveTask con ForkJoinPool</h2>
+<pre><code class="language-java">
+import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.ForkJoinPool;
+
+public class MiRecursiveTask extends RecursiveTask<Integer> {
+    private int tarea;
+
+    public MiRecursiveTask(int tarea) {
+        this.tarea = tarea;
+    }
+
+    @Override
+    protected Integer compute() {
+        if (tarea <= 10) {
+            // Caso base: devolver el valor de la tarea
+            return tarea * tarea;  // Ejemplo: devolver el cuadrado
+        } else {
+            // Caso recursivo: dividir la tarea en dos subtareas
+            MiRecursiveTask subTask1 = new MiRecursiveTask(tarea / 2);
+            MiRecursiveTask subTask2 = new MiRecursiveTask(tarea / 2);
+            subTask1.fork();  // Ejecutar la primera subtarea en paralelo
+            subTask2.fork();  // Ejecutar la segunda subtarea en paralelo
+            // Combinar resultados de ambas subtareas
+            return subTask1.join() + subTask2.join();
+        }
+    }
+
+    public static void main(String[] args) {
+        // Crear un ForkJoinPool para ejecutar tareas recursivas
+        ForkJoinPool pool = new ForkJoinPool();
+        MiRecursiveTask task = new MiRecursiveTask(20);
+        System.out.println("Resultado: " + pool.invoke(task));  // Obtener el resultado final
+    }
+}
+</code></pre>
+
+<h2>Métodos fork() y join() de los recursivos</h2>
+<pre><code class="language-java">
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.ForkJoinPool;
+
+public class Main {
+    public static void main(String[] args) {
+        // Lista de números que vamos a dividir y sumar
+        List<Integer> numeros = new ArrayList<>();
+        for (int i = 1; i <= 20; i++) {
+            numeros.add(i);
+        }
+
+        // Crear una instancia del ForkJoinPool
+        ForkJoinPool pool = new ForkJoinPool();
+
+        // Crear la tarea recursiva para dividir y sumar la lista
+        SumaTarea tarea = new SumaTarea(numeros, 0, numeros.size());
+
+        // Ejecutar la tarea y obtener el resultado
+        Integer resultado = pool.invoke(tarea);
+        System.out.println("Suma total: " + resultado);
+
+        pool.shutdown();
+    }
+}
+
+class SumaTarea extends RecursiveTask<Integer> {
+    private static final int LIMITE = 5;  // Limite de tamaño de la lista para no seguir dividiendo
+    private final List<Integer> lista;
+    private final int inicio;
+    private final int fin;
+
+    // Constructor
+    public SumaTarea(List<Integer> lista, int inicio, int fin) {
+        this.lista = lista;
+        this.inicio = inicio;
+        this.fin = fin;
+    }
+
+    @Override
+    protected Integer compute() {
+        // Si la sublista es suficientemente pequeña, la sumamos directamente
+        if (fin - inicio <= LIMITE) {
+            int suma = 0;
+            for (int i = inicio; i < fin; i++) {
+                suma += lista.get(i);
+            }
+            return suma;
+        } else {
+            // Dividimos la lista en dos partes
+            int mitad = (inicio + fin) / 2;
+            SumaTarea tareaIzquierda = new SumaTarea(lista, inicio, mitad);
+            SumaTarea tareaDerecha = new SumaTarea(lista, mitad, fin);
+
+            // Ejecutamos las tareas de forma asincrónica
+            tareaIzquierda.fork();
+            tareaDerecha.fork();
+
+            // Obtenemos los resultados de las tareas y las combinamos
+            int sumaIzquierda = tareaIzquierda.join();
+            int sumaDerecha = tareaDerecha.join();
+
+            return sumaIzquierda + sumaDerecha;
+        }
+    }
+}    
+</code></pre>
+
+</body>
+</html>
