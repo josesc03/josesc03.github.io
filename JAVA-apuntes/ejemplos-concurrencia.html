@@ -16,8 +16,8 @@
             line-height: 1.6;
             display: flex;
             justify-content: center;
+            align-items: center;
             flex-direction: column;
-            padding: 0 20%;
         }
         h1, h2 {
             color: #2C3E50;
@@ -60,320 +60,345 @@
 
 <h1>Diferencias y Ejemplos de Concurrencia en Java</h1>
 
-<h2>Thread con Executor</h2>
+<h2>ThreadPoolExecutor</h2>
 <pre><code class="language-java">
-import java.util.concurrent.Executor;
-
-public class MiExecutor implements Executor {
-    @Override
-    public void execute(Runnable command) {
-        // Aquí en lugar de iniciar un hilo manualmente, usamos el Executor para ejecutarlo
-        new Thread(command).start();  // En un enfoque más clásico, usaríamos 'new Thread(...)' directamente
-    }
-
-    public static void main(String[] args) {
-        // Crear un executor personalizado que ejecuta tareas en nuevos hilos
-        MiExecutor executor = new MiExecutor();
-        executor.execute(() -> System.out.println("Ejecutando tarea con Thread y Executor."));
-    }
-}
+    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+    executor.execute(new MyThread());
+    executor.execute(new MyRunnable());
+    executor.shutdown();
+    
 </code></pre>
 
-<h2>Callable con ExecutorService</h2>
+<h2>ExecutorService</h2>
 <pre><code class="language-java">
-import java.util.concurrent.*;
+    /**############### Con un solo callable ###############**/
+    ExecutorService executor2 = Executors.newCachedThreadPool();
 
-public class Main {
-    public static void main(String[] args) throws Exception {
-        // Crear un ExecutorService con un solo hilo
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Callable<String> tarea = () -> "Resultado del Callable con ExecutorService.";  // Tarea que devuelve un resultado
-        
-        // Usamos submit en lugar de execute porque queremos obtener un valor de vuelta
-        Future<String> future = executor.submit(tarea);  // Aquí, 'submit' devuelve un Future para obtener el resultado
-        System.out.println(future.get());  // Obtener el resultado de la tarea
+    Callable< Integer > callable = new MyCallable();
 
-        executor.shutdown();  // Finaliza el ExecutorService después de ejecutar la tarea
+    Future< Integer > future = executor2.submit(callable);
+    System.out.println(future.get());
+
+    executor2.shutdown();
+
+    /**############## Con lista de callables ##############**/
+    ExecutorService executor3 = Executors.newCachedThreadPool();
+
+    List< Callable < Integer > > callableList = new ArrayList<>();
+    callableList.add(new MyCallable());
+    callableList.add(new MyCallable());
+
+    List< Future < Integer > > futureList = executor3.invokeAll(callableList);
+    for (Future< Integer > f : futureList) {
+        System.out.println(f.get());
     }
-}
-</code></pre>
 
-<h2>invokeAll y otros métodos ejecutores</h2>
-<pre><code class="language-java">
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+    executor3.shutdown();
 
-public class Main {
-    public static void main(String[] args) throws Exception {
-        // Crear un ExecutorService con un pool de hilos
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-        List<Callable<String>> tareas = Arrays.asList(
-            () -> "Tarea 1",
-            () -> "Tarea 2"
-        );
+    /**#### Primer resultado de una lista de callables ####**/
+    ExecutorService executor4 = Executors.newCachedThreadPool();
 
-        // Usando invokeAll: ejecuta todas las tareas y espera a que todas terminen
-        // Esto es diferente a 'submit' porque 'invokeAll' espera a que todas las tareas terminen antes de continuar
-        executor.invokeAll(tareas).forEach(futuro -> {
-            try {
-                System.out.println(futuro.get());  // Obtener el resultado de cada tarea
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+    List< Callable > Integer >> callableList2 = new ArrayList<>();
+    callableList2.add(new MyCallable());
+    callableList2.add(new MyCallable());
 
-        // Usando invokeAny: ejecuta las tareas y obtiene el resultado de la primera que termine
-        // Esto es útil si solo necesitas el primer resultado disponible
-        String resultado = executor.invokeAny(tareas);
-        System.out.println("Resultado de invokeAny: " + resultado);
+    // Devuelve directamente el resultado
+    int resultado = executor4.invokeAny(callableList2);
+    System.out.println(resultado);
 
-        executor.shutdown();
-    }
-}
-</code></pre>
+    executor4.shutdown();
 
-<h2>Runnable con execute y ExecutorService</h2>
-<pre><code class="language-java">
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class Main {
-    public static void main(String[] args) {
-        // Crear un ExecutorService con un pool de hilos
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-        executor.execute(() -> System.out.println("Tarea 1 ejecutada con execute."));  // Ejecutar tarea 1
-        executor.execute(() -> System.out.println("Tarea 2 ejecutada con execute."));  // Ejecutar tarea 2
-        executor.shutdown();  // Finaliza el ExecutorService después de ejecutar las tareas
-    }
-}
 </code></pre>
 
 <h2>Future y CompletableFuture</h2>
 <pre><code class="language-java">
-import java.util.concurrent.*;
 
-public class Main {
-    public static void main(String[] args) throws Exception {
-        // Usando Future: tarea que devuelve un valor
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Callable<String> tarea = () -> "Resultado con Future.";
-        Future<String> future = executor.submit(tarea);
-        System.out.println(future.get());  // Obtener el resultado de la tarea
+    // Usando Future: tarea que devuelve un valor
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    Callable< String > tarea = () -> "Resultado con Future.";
+    Future< String > future = executor.submit(tarea);
+    System.out.println(future.get());  // Obtener el resultado de la tarea
+    
+    // Ejemplo básico de creacion de un CompletableFuture
+    // Para runnables se usa runAsync() y para callables se usa supplyAsync()
+    // Podemos crear un metodo fuera del Main para crear CompletableFuture< T > 
+    public static CompletableFuture< T > compFuture(#parametros#) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                MyCallable callable = new MyCallable(#parametros#);
+                return callable.call();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    // o podemos directamente crear el CompletableFuture< T >
+    CompletableFuture< Void > compFuture =
+        CompletableFuture.runAsync(
+                () -> {
+                    try {
+                        MyRunnable runnable = new MyRunnable();
+                        runnable.run();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+    /**################################## Funciones complementarias ###################################**/
+
+    // Encadenamiento con `thenApply()`
+    // `thenApply()` nos permite transformar el resultado de la tarea anterior en un nuevo CompletableFuture
+    CompletableFuture< Integer > completableFuture = new CompletableFuture< Integer >().supplyAsync(() -> {
+        MyCallable myCallable = new MyCallable();
+        try {
+            return myCallable.call();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    });
+
+    CompletableFuture< Integer > resultadoCompletableFuture = completableFuture.thenApply(t -> t + 1); //aplicacion en un nuevo CompletableFuture
+
+    int resultado = completableFuture.thenApply(t -> t + 1).get() //aplicacion directa
+
+    /**############**/
+
+    // Manejo de excepciones con `exceptionally()`
+    // Usamos `exceptionally()` para manejar posibles excepciones que ocurran durante la ejecución.
+    CompletableFuture< T > completableFuture3 = CompletableFuture.supplyAsync(() -> {
+        throw new RuntimeException("¡Error!");  // Simulamos un error
+    })
+    .exceptionally(ex -> "Error manejado: " + ex.getMessage());  // Manejo de la excepción
+    
+    /**############**/
+
+    // Esperar todas las tareas con `allOf()`
+    // `allOf()` solo se encarga de coordinar las tareas
         
-        // Usando CompletableFuture: permite tareas asincrónicas con más flexibilidad
-        // CompletableFuture es más flexible, ya que permite encadenar acciones adicionales
-        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> "Resultado con CompletableFuture.");
-        System.out.println(completableFuture.get());  // Obtener el resultado
+    //con CompletableFuture separados
+    CompletableFuture< T > task1 = CompletableFuture.supplyAsync(() -> T);
+    // ¡recordemos que a parte de crearlos manualmente podemos usar un metodo de creacion de CompletableFutures!
+    CompletableFuture< Void > allOf = CompletableFuture.allOf(metodo(), task2); 
+    allOf.join();  //bloqueamos hasta que todas terminen
 
-        executor.shutdown();  // Finaliza el ExecutorService después de ejecutar la tarea
-    }
-}
+    //con una lista de CompletableFuture 
+    // ¡recordemos que a parte de crearlos manualmente podemos usar un metodo de creacion de CompletableFutures!
+    List< CompletableFuture < T > > completableFutureList = Arrays.asList(metodo(), task2); 
+    CompletableFuture< Void > alternativeAllOf = CompletableFuture.allOf(completableFutureList.toArray(new CompletableFuture[completableFutureList.size()]));
+        allOf.join();  //bloqueamos hasta que todas terminen
+
+    /**############**/
+
+    // Esperar la primera tarea con `anyOf()`
+    // `anyOf()` nos permite esperar a que cualquiera de las tareas termine primero.
+    //con CompletableFuture separados
+    CompletableFuture< T > task1 = CompletableFuture.supplyAsync(() -> T);
+
+    //¡recordemos que a parte de crearlos manualmente podemos usar un metodo de creacion de CompletableFutures!
+    CompletableFuture< Object > anyOf = CompletableFuture.anyOf(metodo(), task2); 
+    integerCompletableFuture.thenRun(() -> {
+        try {
+            Integer result = (T) integerCompletableFuture.get(); // Debemos recordar castear el Objeto generico al tipo que necesitemos
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    });
+    anyOf.join();
+
 </code></pre>
 
-<table border="1" style="border-collapse: collapse; width: 100%;">
-    <thead>
-        <tr>
-            <th style="text-align: left; padding: 8px; background-color: #f2f2f2;">Aspecto</th>
-            <th style="text-align: left; padding: 8px; background-color: #f2f2f2;">Future</th>
-            <th style="text-align: left; padding: 8px; background-color: #f2f2f2;">CompletableFuture</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td style="padding: 8px;">**Definición**</td>
-            <td style="padding: 8px;">Interfaz utilizada para representar el resultado de una operación asíncrona, disponible en `java.util.concurrent`.</td>
-            <td style="padding: 8px;">Clase que extiende `Future` y `CompletionStage` para manejar operaciones asíncronas de manera más flexible.</td>
-        </tr>
-        <tr>
-            <td style="padding: 8px;">**Disponibilidad**</td>
-            <td style="padding: 8px;">Disponible desde Java 5.</td>
-            <td style="padding: 8px;">Introducido en Java 8.</td>
-        </tr>
-        <tr>
-            <td style="padding: 8px;">**Bloqueo**</td>
-            <td style="padding: 8px;">Usa métodos bloqueantes como `get()` para obtener el resultado.</td>
-            <td style="padding: 8px;">Permite manejar resultados de forma no bloqueante usando callbacks como `thenApply`, `thenAccept`, etc.</td>
-        </tr>
-        <tr>
-            <td style="padding: 8px;">**Composición**</td>
-            <td style="padding: 8px;">No soporta encadenamiento de tareas.</td>
-            <td style="padding: 8px;">Soporta encadenamiento y combinación de tareas asíncronas mediante métodos como `thenCombine` o `thenCompose`.</td>
-        </tr>
-        <tr>
-            <td style="padding: 8px;">**Cancelación**</td>
-            <td style="padding: 8px;">Puede ser cancelado usando `cancel()`.</td>
-            <td style="padding: 8px;">También soporta cancelación y además puede completarse manualmente con `complete()`.</td>
-        </tr>
-        <tr>
-            <td style="padding: 8px;">**Uso típico**</td>
-            <td style="padding: 8px;">Se utiliza principalmente en aplicaciones que necesitan ejecutar tareas en un `ExecutorService`.</td>
-            <td style="padding: 8px;">Se utiliza en aplicaciones que requieren operaciones asíncronas y programación reactiva.</td>
-        </tr>
-        <tr>
-            <td style="padding: 8px;">**Cómo se utiliza**</td>
-            <td style="padding: 8px;">
-                <pre>
-Future&lt;String&gt; future = executor.submit(() -> "Resultado");
-String resultado = future.get(); // Bloqueante
-                </pre>
-            </td>
-            <td style="padding: 8px;">
-                <pre>
-CompletableFuture&lt;String&gt; future = 
-    CompletableFuture.supplyAsync(() -> "Resultado");
-future.thenAccept(System.out::println); // No bloqueante
-                </pre>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<p>Debemos recordar que con <code>Future</code>, el hilo que lo llama se bloquea hasta que la tarea asociada termine,lo que impide la ejecución paralela del hilo principal. 
+    <br>En cambio, <code>CompletableFuture</code> permite ejecutar tareas de manera asíncrona, sin bloquear el hilo principal, lo que facilita la ejecución paralela.</p>
 
-<h2>RecursiveAction con ForkJoinPool</h2>
-<pre><code class="language-java">
-import java.util.concurrent.RecursiveAction;
-import java.util.concurrent.ForkJoinPool;
 
-public class MiRecursiveAction extends RecursiveAction {
-    private int tarea;
+<h2>Uso de Lock = ReentrantLock y ReadWriteLock = ReentrantReadWriteLock</h2>
 
-    public MiRecursiveAction(int tarea) {
-        this.tarea = tarea;
+<pre><code>
+    // Ejemplo de Lock simple con ReentrantLock
+    Lock lock = new ReentrantLock(); // Creamos un ReentrantLock
+    ...
+    Thread lockThread = new Thread(() -> {
+        lock.lock(); // Adquirimos el lock
+        ...
+        lock.unlock(); // Liberamos el lock
+    });
+
+    // Ejemplo de ReadWriteLock con ReentrantReadWriteLock
+    ReadWriteLock lock = new ReentrantReadWriteLock();
+    ...
+    public void readOperation() {
+        lock.readLock().lock();
+        ... // This area can be achieved by multiple reading threads
+        lock.readLock().unlock();
+    }
+    public void writeOperation() {
+        lock.writeLock().lock();
+        ... // When a writing thread gets here, no one else can have the lock
+        lock.writeLock().unlock();
     }
 
-    @Override
-    protected void compute() {
-        if (tarea <= 10) {
-            // Caso base: ejecutar tarea simple
-            System.out.println("Ejecutando tarea pequeña: " + tarea);
-        } else {
-            // Caso recursivo: dividir la tarea en dos subtareas
-            MiRecursiveAction subTask1 = new MiRecursiveAction(tarea / 2);
-            MiRecursiveAction subTask2 = new MiRecursiveAction(tarea / 2);
-            subTask1.fork();  // Ejecutar la primera subtarea en paralelo
-            subTask2.fork();  // Ejecutar la segunda subtarea en paralelo
-            subTask1.join();  // Esperar que termine la primera subtarea
-            subTask2.join();  // Esperar que termine la segunda subtarea
-        }
-    }
-
-    public static void main(String[] args) {
-        // Crear un ForkJoinPool para ejecutar tareas recursivas
-        ForkJoinPool pool = new ForkJoinPool();
-        MiRecursiveAction action = new MiRecursiveAction(20);
-        pool.invoke(action);  // Ejecutar la tarea principal
-    }
-}
 </code></pre>
 
-<h2>RecursiveTask con ForkJoinPool</h2>
+<h2>RecursiveTask y RecursiveAction con ForkJoinPool</h2>
+<p>RecursiveTask devuelve valores | RecursiveAction no devuelve valores</p>
 <pre><code class="language-java">
-import java.util.concurrent.RecursiveTask;
-import java.util.concurrent.ForkJoinPool;
+public static void main(String[] args) {
+    ///////////////////// lista de videojuegos /////////////////////
+    ArrayList< VideoGame > list = new ArrayList< VideoGame >();
+    list.add(new VideoGame("Assassin's Creed", 19.95f));
+    list.add(new VideoGame("The last of us", 49.90f));
+    list.add(new VideoGame("Fifa 14", 39.95f));
+    list.add(new VideoGame("Far Cry 2", 14.95f));
+    list.add(new VideoGame("Watchdogs", 59.95f));
+    list.add(new VideoGame("Assassin's Creed II", 24.90f));
+    list.add(new VideoGame("Far Cry 3", 39.50f));
+    list.add(new VideoGame("Borderlands", 19.90f));
+    ////////////////////////////////////////////////////////////////
 
-public class MiRecursiveTask extends RecursiveTask<Integer> {
-    private int tarea;
+    // Crear la clase RecursiveTask y el ForkJoinPool //
+    GameSearch v = new GameSearch(list, "Assassin's", 0, list.size());
+    ForkJoinPool pool = new ForkJoinPool();
+    ////////////////////////////////////////////////////
 
-    public MiRecursiveTask(int tarea) {
-        this.tarea = tarea;
-    }
-
-    @Override
-    protected Integer compute() {
-        if (tarea <= 10) {
-            // Caso base: devolver el valor de la tarea
-            return tarea * tarea;  // Ejemplo: devolver el cuadrado
-        } else {
-            // Caso recursivo: dividir la tarea en dos subtareas
-            MiRecursiveTask subTask1 = new MiRecursiveTask(tarea / 2);
-            MiRecursiveTask subTask2 = new MiRecursiveTask(tarea / 2);
-            subTask1.fork();  // Ejecutar la primera subtarea en paralelo
-            subTask2.fork();  // Ejecutar la segunda subtarea en paralelo
-            // Combinar resultados de ambas subtareas
-            return subTask1.join() + subTask2.join();
+    // ejecutamos la pool de la tarea recursiva
+    pool.execute(v);
+    // mientras no termine el hilo principal duerme
+    do {
+        try { Thread.sleep(100); } catch (Exception e) {}
+    } while (!v.isDone());
+    
+    // mostramos los resultados obtenidos por la búsqueda en el caso de usar una RecursiveTask
+    try {
+        ArrayList< String > results = v.get();
+        for (int i = 0; i < results.size(); i++)
+            System.out.println(results.get(i));
+        } catch (Exception e) {
+            System.out.println("Exception occurred: " + e.getMessage());
         }
+    pool.shutdown();
+}
+
+public class GameSearch extends RecursiveTask< ArrayList < String > > | RecursiveAction {
+
+    // Cantidad máxima de videojuegos que una tarea manejará sin dividirse
+    public static final int MAX_GAMES = 5;
+
+    ArrayList< VideoGame > list;
+
+    // Índices que delimitan la porción de la lista a procesar.
+    int first;
+    int last;
+
+    // Texto que queremos buscar en los títulos de los videojuegos.
+    String text;
+
+    // Constructor
+    public GameSearch(ArrayList< VideoGame > list, String text, int first, int last) {
+        this.list = list;  // La lista de videojuegos.
+        this.text = text;  // El texto a buscar.
+        this.first = first; // Índice inicial de la búsqueda.
+        this.last = last;   // Índice final de la búsqueda.
     }
 
-    public static void main(String[] args) {
-        // Crear un ForkJoinPool para ejecutar tareas recursivas
-        ForkJoinPool pool = new ForkJoinPool();
-        MiRecursiveTask task = new MiRecursiveTask(20);
-        System.out.println("Resultado: " + pool.invoke(task));  // Obtener el resultado final
+    /**
+        * Método principal de `RecursiveTask` que define la lógica de procesamiento.
+        * Si la porción de la lista es pequeña, realiza la búsqueda directamente.
+        * Si no, divide la tarea en subtareas usando recursión.
+        */
+    @Override
+    protected ArrayList< String > compute() {
+        // Lista de resultados a devolver
+        ArrayList< String > results = new ArrayList<>(); 
+
+        if (last - first <= MAX_GAMES) {
+            // Caso base: si la porción de la lista es pequeña, realiza la búsqueda directa.
+            results = search(); // Llama al método `search()` para procesar la porción.
+        } else {
+            // Caso recursivo: divide la lista en dos mitades.
+
+            // Calcula el índice medio para dividir la lista.
+            int middle = (first + last) / 2;
+
+            // Crea dos nuevas tareas para manejar las mitades.
+            System.out.println("Dividiendo tarea en dos partes...");
+            GameSearch s1 = new GameSearch(list, text, first, middle + 1); // Primera mitad.
+            GameSearch s2 = new GameSearch(list, text, middle + 1, last);  // Segunda mitad.
+
+            // `invokeAll`: Ejecuta las dos subtareas de manera concurrente.
+            // Este método bloquea hasta que ambas tareas hayan terminado.
+            invokeAll(s1, s2);
+
+            //////////////////////////////// solo RecursiveTask ////////////////////////////////
+            try {
+                // Recoge los resultados de las subtareas usando `get()`.
+                ArrayList< String > resultsFromS1 = s1.get(); // Resultados de la primera mitad.
+                ArrayList< String > resultsFromS2 = s2.get(); // Resultados de la segunda mitad.
+
+                // Combina los resultados de ambas subtareas.
+                results.addAll(resultsFromS1);
+                results.addAll(resultsFromS2);
+            } catch (Exception e) {
+                e.printStackTrace(); // Manejo básico de excepciones.
+            }
+            ////////////////////////////////////////////////////////////////////////////////////
+        }
+
+        // Devuelve los resultados acumulados (solo RecursiveTask)
+        return results;
+    }
+
+    /**
+        * Método auxiliar para buscar el texto en una porción de la lista.
+        * Este método solo se ejecuta en las tareas que no necesitan dividirse.
+        */
+    public ArrayList<String> search() {
+        ArrayList<String> results = new ArrayList<>(); // Almacena resultados de esta búsqueda.
+        for (int i = first; i < last; i++) { // Itera sobre los índices asignados.
+            try {
+                // Simula un retraso en el procesamiento (p. ej., para representar trabajo intensivo).
+                TimeUnit.SECONDS.sleep(1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Si el título del videojuego contiene el texto buscado, agrega un resultado.
+            if (list.get(i).getTitle().contains(text)) {
+                System.out.println("Found at position " + i + ": " + list.get(i).getTitle()); // Para recursiveAction
+                results.add("Found at " + i + ": " + list.get(i).getTitle()); // Para recursiveTask
+            }
+        }
+        return results; // Devuelve los resultados encontrados.
     }
 }
+    
 </code></pre>
 
 <h2>Métodos fork() y join() de los recursivos</h2>
 <pre><code class="language-java">
-import java.util.List;
-import java.util.ArrayList;
-import java.util.concurrent.RecursiveTask;
-import java.util.concurrent.ForkJoinPool;
-
-public class Main {
-    public static void main(String[] args) {
-        // Lista de números que vamos a dividir y sumar
-        List<Integer> numeros = new ArrayList<>();
-        for (int i = 1; i <= 20; i++) {
-            numeros.add(i);
-        }
-
-        // Crear una instancia del ForkJoinPool
-        ForkJoinPool pool = new ForkJoinPool();
-
-        // Crear la tarea recursiva para dividir y sumar la lista
-        SumaTarea tarea = new SumaTarea(numeros, 0, numeros.size());
-
-        // Ejecutar la tarea y obtener el resultado
-        Integer resultado = pool.invoke(tarea);
-        System.out.println("Suma total: " + resultado);
-
-        pool.shutdown();
-    }
-}
-
-class SumaTarea extends RecursiveTask<Integer> {
-    private static final int LIMITE = 5;  // Limite de tamaño de la lista para no seguir dividiendo
-    private final List<Integer> lista;
-    private final int inicio;
-    private final int fin;
-
-    // Constructor
-    public SumaTarea(List<Integer> lista, int inicio, int fin) {
-        this.lista = lista;
-        this.inicio = inicio;
-        this.fin = fin;
-    }
-
     @Override
-    protected Integer compute() {
-        // Si la sublista es suficientemente pequeña, la sumamos directamente
-        if (fin - inicio <= LIMITE) {
-            int suma = 0;
-            for (int i = inicio; i < fin; i++) {
-                suma += lista.get(i);
-            }
-            return suma;
-        } else {
-            // Dividimos la lista en dos partes
-            int mitad = (inicio + fin) / 2;
-            SumaTarea tareaIzquierda = new SumaTarea(lista, inicio, mitad);
-            SumaTarea tareaDerecha = new SumaTarea(lista, mitad, fin);
+    protected void compute() {
+        if (last - first <= MAX_GAMES)
+            search();
+        else {
+            int middle = (first + last)/2;
+            System.out.println("Creating 2 subtasks...");
+            GameSearch s1 = new GameSearch(list, text, first, middle+1);
+            GameSearch s2 = new GameSearch(list, text, middle+1, last);
 
-            // Ejecutamos las tareas de forma asincrónica
-            tareaIzquierda.fork();
-            tareaDerecha.fork();
-
-            // Obtenemos los resultados de las tareas y las combinamos
-            int sumaIzquierda = tareaIzquierda.join();
-            int sumaDerecha = tareaDerecha.join();
-
-            return sumaIzquierda + sumaDerecha;
+            // `fork()`:envía la tarea a ejecución en paralelo.
+            s1.fork();
+            s2.fork();
+            
+            ... // Aqui se podria poner codigo a ejecutar antes del join de forma asincrona
+            
+            s1.join(); // Espera a que la primera tarea termine
+            ...
+            
+            s2.join(); // Espera a que la primera tarea termine
         }
     }
-}    
 </code></pre>
 
 </body>
