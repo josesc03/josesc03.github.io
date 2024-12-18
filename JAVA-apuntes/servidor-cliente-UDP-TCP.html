@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Métodos de Sockets</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        header {
+            background-color: #1f1f1fa8;
+            backdrop-filter: blur(5px);
+            color: #fff;
+            padding: 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            width: 100%;
+        }
+        main {
+            padding: 2rem;
+        }
+        section {
+            margin-bottom: 2rem;
+        }
+        h2 {
+            color: #bb86fc;
+        }
+        h1 {
+            margin: .5rem;
+        }
+        pre {
+            background-color: #2e2e2e;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Guía de Métodos de Sockets</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Ejemplo de uso combinado</h2>
+            <p>Este código muestra cómo usar varias funciones de sockets en un cliente-servidor.</p>
+            <pre><code class="hljs language-java">// Servidor
+ServerSocket server = new ServerSocket(8080, 50);
+System.out.println("Servidor iniciado en el puerto " + server.getLocalPort());
+Socket clientSocket = server.accept();
+System.out.println("Cliente conectado desde el puerto " + clientSocket.getPort());
+
+// Cliente
+InetAddress address = InetAddress.getByName("localhost");
+Socket socket = new Socket(address, 8080);
+System.out.println("Conectado al servidor");
+
+// Comunicación - Cliente
+DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+output.writeUTF("Hola desde el cliente");
+
+// Comunicación - Servidor
+DataInputStream input = new DataInputStream(clientSocket.getInputStream());
+System.out.println("Mensaje recibido: " + input.readUTF());</code></pre>
+        </section>
+
+        <section>
+            <h2>Conexión Peer-to-Peer con Datagramas</h2>
+            <p>Se utiliza la clase <code>DatagramSocket</code> para enviar y recibir paquetes de datos.</p>
+            <pre><code class="hljs language-java">// Envío de Datagramas
+DatagramSocket sender = new DatagramSocket();
+byte[] buffer = "Hola, peer".getBytes();
+InetAddress address = InetAddress.getByName("localhost");
+DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 8080);
+sender.send(packet);
+System.out.println("Mensaje enviado");
+
+// Recepción de Datagramas
+DatagramSocket receiver = new DatagramSocket(8080);
+byte[] receiveBuffer = new byte[1024];
+DatagramPacket receivedPacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
+receiver.receive(receivedPacket);
+String message = new String(receivedPacket.getData(), 0, receivedPacket.getLength());
+System.out.println("Mensaje recibido: " + message);</code></pre>
+        </section>
+    </main>
+</body>
+</html>
