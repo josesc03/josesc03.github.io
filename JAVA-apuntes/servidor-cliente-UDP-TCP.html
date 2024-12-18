@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guía de Métodos de Sockets</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/dark.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/monokai.min.css" rel="stylesheet">
     <script>hljs.highlightAll();</script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,46 +59,205 @@
     </header>
     <main>
         <section>
-            <h2>Ejemplo de uso combinado</h2>
-            <p>Este código muestra cómo usar varias funciones de sockets en un cliente-servidor.</p>
-            <pre><code class="hljs language-java">// Servidor
-ServerSocket server = new ServerSocket(8080, 50);
-System.out.println("Servidor iniciado en el puerto " + server.getLocalPort());
-Socket clientSocket = server.accept();
-System.out.println("Cliente conectado desde el puerto " + clientSocket.getPort());
+            <h2>Ejemplo de socket del lado cliente</h2>
+            <p>Este código muestra como enviar y recibir datos de un servidor a partir de un socket del lado cliente.</p>
+            <pre><code class="hljs language-java">public class ClienteConcurrente {
+    static final String Host = "localhost"; //direccion IP o Host servidor
+    static final int Port = 2000; //puerto en el que trabaja el servidor
 
-// Cliente
-InetAddress address = InetAddress.getByName("localhost");
-Socket socket = new Socket(address, 8080);
-System.out.println("Conectado al servidor");
+    public ClienteConcurrente() {
+        try (
+                Socket socket = new Socket( Host, Port ); //conexion al servidor por host y puerto
 
-// Comunicación - Cliente
-DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-output.writeUTF("Hola desde el cliente");
+                //Creacion de flujos de entrada y salida
+                DataInputStream flujo_entrada = new DataInputStream( socket.getInputStream() );
+                DataOutputStream flujo_salida = new DataOutputStream( socket.getOutputStream() );
+        ) {
+            System.out.println( "Se ha conectado al servidor" );
 
-// Comunicación - Servidor
-DataInputStream input = new DataInputStream(clientSocket.getInputStream());
-System.out.println("Mensaje recibido: " + input.readUTF());</code></pre>
+            //Tareas que realiza el cliente
+            String datos = "Envio de datos"; //creacion de datos a enviar
+            flujo_salida.writeUTF( datos ); //envio de datos
+            System.out.println( "Datos enviados: " + datos );
+
+            String datosRecogidos = flujo_entrada.readUTF(); //recogida de datos
+            System.out.println( "Se han recibido los datos" );
+            System.out.println( "Datos recogidos: " + datosRecogidos );
+
+            //Se cierra la conexion
+            socket.close();
+            System.out.println( "Se ha desconectado del servidor" );
+
+        } catch ( Exception e ) {
+            System.out.println( e.getMessage() );
+        }
+    }
+
+    public static void main( String[] args ) {
+        new ClienteConcurrente();
+    }
+}</code></pre>
+        </section>
+
+        <section>
+            <h2>Ejemplo de ServerSocket del lado servidor</h2>
+            <p>Este código muestra como enviar y recibir datos de un cliente a partir de un socket del lado servidor.</p>
+            <p style="font-size: small;">En este caso usamos la propia clase como Thread para gestionar el socket del cliente</p>
+            <pre><code class="hljs language-java">
+public class ServidorConcurrente extends Thread {
+    Socket skCliente; //socket cliente
+    static final int Puerto = 2000; //puerto que abre el servidor
+
+    public ServidorConcurrente( Socket skCliente ) {
+        this.skCliente = skCliente; //inicializacion del socket cliente para cuando se llame al hilo gestor
+    }
+
+    public static void main( String[] args ) {
+        try (
+                //Inicializacion del servidor
+                ServerSocket skServidor = new ServerSocket( Puerto );
+        ) {
+            System.out.println( "Servidor iniciado" );
+            System.out.println( "Escucho el puerto " + Puerto );
+
+            while ( true ) {
+                //Conexion de un cliente
+                Socket skCliente = skServidor.accept(); //espera hasta que un cliente se conecte
+                System.out.println( "Cliente conectado" );
+
+                //Atencion de un cliente por un hilo
+                new ServidorConcurrente( skCliente ).start();
+
+            }
+
+        } catch ( Exception e ) {
+            System.out.println( e.getMessage() );
+        }
+    }
+
+    @Override
+    public void run() {
+        try (
+                //Creacion de flujos de entrada y salida
+                DataInputStream flujo_entrada = new DataInputStream( skCliente.getInputStream() );
+                DataOutputStream flujo_salida = new DataOutputStream( skCliente.getOutputStream() );
+        ) {
+            System.out.println( "Se ha conectado el cliente exitosamente" );
+
+            //Atencion de la peticion del cliente
+            String datos = flujo_entrada.readUTF(); //recogida de datos
+            System.out.println( "Datos recogidos: " + datos );
+
+            datos = datos.toUpperCase(); //tranformacion de datos
+            System.out.println( "Se han transformado los datos correctamente" );
+
+            flujo_salida.writeUTF( datos ); //envio de datos
+            System.out.println( "Se han enviado los datos transformados correctamente" );
+
+            //Se cierra la conexion
+            skCliente.close();
+            System.out.println( "Cliente desconectado" );
+
+        } catch ( Exception e ) {
+            System.err.println( e.getMessage() );
+        }
+    }
+}</code></pre>
         </section>
 
         <section>
             <h2>Conexión Peer-to-Peer con Datagramas</h2>
             <p>Se utiliza la clase <code>DatagramSocket</code> para enviar y recibir paquetes de datos.</p>
-            <pre><code class="hljs language-java">// Envío de Datagramas
-DatagramSocket sender = new DatagramSocket();
-byte[] buffer = "Hola, peer".getBytes();
-InetAddress address = InetAddress.getByName("localhost");
-DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 8080);
-sender.send(packet);
-System.out.println("Mensaje enviado");
+            <pre><code class="hljs language-java">
+public class ClienteServidorPeer {
 
-// Recepción de Datagramas
-DatagramSocket receiver = new DatagramSocket(8080);
-byte[] receiveBuffer = new byte[1024];
-DatagramPacket receivedPacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
-receiver.receive(receivedPacket);
-String message = new String(receivedPacket.getData(), 0, receivedPacket.getLength());
-System.out.println("Mensaje recibido: " + message);</code></pre>
+    static final int PUERTO = 2000; // Puerto de comunicación para el envío de los datagramas
+
+    // Función que actúa como servidor
+    public static void servidor() {
+        try (DatagramSocket socket = new DatagramSocket(PUERTO)) {
+            System.out.println("Servidor escuchando en el puerto " + PUERTO);
+
+            byte[] bufferRecepcion = new byte[1024]; // Buffer donde se almacenarán los datos recibidos
+
+            while (true) {
+                // Recibir datos del cliente
+                DatagramPacket paqueteRecepcion = new DatagramPacket(bufferRecepcion, bufferRecepcion.length);
+                socket.receive(paqueteRecepcion); // Espera hasta recibir un datagrama del cliente
+                String mensajeRecibido = new String(paqueteRecepcion.getData(), 0, paqueteRecepcion.getLength());
+                System.out.println("Servidor recibió: " + mensajeRecibido);
+
+                // Transformar los datos a mayúsculas
+                String mensajeTransformado = mensajeRecibido.toUpperCase();
+                System.out.println("Datos transformados a UPPERCASE: " + mensajeTransformado);
+
+                // Convertir el mensaje transformado a un arreglo de bytes
+                byte[] mensajeBytes = mensajeTransformado.getBytes();
+
+                // Obtener la dirección IP y puerto del cliente desde el datagrama recibido
+                InetAddress direccionCliente = paqueteRecepcion.getAddress();
+                int puertoCliente = paqueteRecepcion.getPort();
+
+                // Crear un nuevo datagrama para enviar la respuesta al cliente
+                DatagramPacket paqueteEnvio = new DatagramPacket(mensajeBytes, mensajeBytes.length, direccionCliente, puertoCliente);
+                socket.send(paqueteEnvio); // Enviar el datagrama con el mensaje transformado
+                System.out.println("Servidor respondió con: " + mensajeTransformado);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error en el servidor: " + e.getMessage());
+        }
+    }
+
+    // Función que actúa como cliente
+    public static void cliente() {
+        try ( DatagramSocket socket = new DatagramSocket()) {
+            // Dirección del servidor (peer)
+            InetAddress direccionServidor = InetAddress.getByName("localhost"); // Dirección IP del servidor
+
+            Scanner scanner = new Scanner(System.in);
+
+            // Enviar datos al servidor
+            System.out.print("Ingrese un mensaje para enviar al servidor: ");
+            String mensajeEnvio = scanner.nextLine(); // Leer el mensaje del usuario
+            byte[] mensajeBytes = mensajeEnvio.getBytes(); // Convertir el mensaje a un arreglo de bytes
+
+            // Crear un paquete de datagrama para enviar los datos al servidor
+            DatagramPacket paqueteEnvio = new DatagramPacket(mensajeBytes, mensajeBytes.length, direccionServidor, PUERTO);
+            socket.send(paqueteEnvio); // Enviar el datagrama al servidor
+            System.out.println("Cliente envió: " + mensajeEnvio);
+
+            // Recibir la respuesta del servidor
+            byte[] bufferRecibo = new byte[1024]; // Buffer para recibir la respuesta del servidor
+            DatagramPacket paqueteRecepcion = new DatagramPacket(bufferRecibo, bufferRecibo.length);
+            socket.receive(paqueteRecepcion); // Esperar a recibir el mensaje transformado por el servidor
+            String mensajeRecibido = new String(paqueteRecepcion.getData(), 0, paqueteRecepcion.getLength());
+            System.out.println("Cliente recibió: " + mensajeRecibido); // Imprimir la respuesta
+
+        } catch (Exception e) {
+            System.out.println("Error en el cliente: " + e.getMessage());
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Elija una opción:");
+        System.out.println("1. Actuar como servidor");
+        System.out.println("2. Actuar como cliente");
+        System.out.print("Seleccione: ");
+        int opcion = scanner.nextInt();
+        scanner.nextLine(); // Consumir la nueva línea después de la opción
+
+        if (opcion == 1) {
+            servidor(); // Iniciar el servidor
+        } else if (opcion == 2) {
+            cliente(); // Iniciar el cliente
+        } else {
+            System.out.println("Opción no válida.");
+        }
+    }
+}
+            </code></pre>
         </section>
     </main>
 </body>
