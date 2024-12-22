@@ -58,6 +58,7 @@
         <h1>Guía de Métodos de Sockets</h1>
     </header>
     <main>
+        <a href="index.html"><button style="padding: 10px;border-radius: 10px;">Go back</button></a>
         <section>
             <h2>Ejemplo de socket del lado cliente</h2>
             <p>Este código muestra como enviar y recibir datos de un servidor a partir de un socket del lado cliente.</p>
@@ -69,10 +70,10 @@
         try (
                 Socket skCliente = new Socket( Host, Port ); //conexion al servidor por host y puerto
 
-                //Creacion de flujos de entrada y salida
+                // flujo_entrada: permite recibir datos desde el servidor.
                 DataInputStream flujo_entrada = new DataInputStream( skCliente.getInputStream() );
-                DataOutputStream flujo_salida = new DataOutputStream( skCliente.getOutputStream() );
-        ) {
+                // flujo_salida: permite enviar datos al servidor.
+                DataOutputStream flujo_salida = new DataOutputStream( skCliente.getOutputStream() ) ) {
             System.out.println( "Se ha conectado al servidor" );
 
             //Tareas que realiza el cliente
