@@ -67,11 +67,11 @@
 
     public ClienteConcurrente() {
         try (
-                Socket socket = new Socket( Host, Port ); //conexion al servidor por host y puerto
+                Socket skCliente = new Socket( Host, Port ); //conexion al servidor por host y puerto
 
                 //Creacion de flujos de entrada y salida
-                DataInputStream flujo_entrada = new DataInputStream( socket.getInputStream() );
-                DataOutputStream flujo_salida = new DataOutputStream( socket.getOutputStream() );
+                DataInputStream flujo_entrada = new DataInputStream( skCliente.getInputStream() );
+                DataOutputStream flujo_salida = new DataOutputStream( skCliente.getOutputStream() );
         ) {
             System.out.println( "Se ha conectado al servidor" );
 
@@ -85,7 +85,7 @@
             System.out.println( "Datos recogidos: " + datosRecogidos );
 
             //Se cierra la conexion
-            socket.close();
+            skCliente.close();
             System.out.println( "Se ha desconectado del servidor" );
 
         } catch ( Exception e ) {
@@ -138,9 +138,11 @@ public class ServidorConcurrente extends Thread {
     @Override
     public void run() {
         try (
-                //Creacion de flujos de entrada y salida
-                DataInputStream flujo_entrada = new DataInputStream( skCliente.getInputStream() );
-                DataOutputStream flujo_salida = new DataOutputStream( skCliente.getOutputStream() );
+            // Se crean flujos de entrada y salida para la comunicación con el cliente.
+            // flujo_entrada: permite recibir datos desde el cliente.
+            // flujo_salida: permite enviar datos al cliente.
+            DataInputStream flujo_entrada = new DataInputStream( skCliente.getInputStream() );
+            DataOutputStream flujo_salida = new DataOutputStream( skCliente.getOutputStream() );
         ) {
             System.out.println( "Se ha conectado el cliente exitosamente" );
 
