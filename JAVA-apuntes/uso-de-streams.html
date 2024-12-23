@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notas sobre Java Stream API</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/monokai.min.css" rel="stylesheet">
+    <script>hljs.highlightAll();</script>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #dcdcdc;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        main {
+            width: 40%;
+        }
+        h1, h3 {
+            color: #ff6347; /* Color vibrante para los títulos */
+        }
+        h2 {
+            color: #adff2f; /* Otro color para los subtítulos */
+            margin: 50px 0 0 0;
+        }
+        pre {
+            background-color: #2d2d2d;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: Consolas, "Courier New", monospace;
+        }
+        a {
+            color: #569cd6;
+        }
+        ul li {
+            margin-bottom: 10px;
+        }
+        strong {
+            color: #ff6347; /* Resaltar el texto en negrita con un color brillante */
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Notas sobre Java Stream API</h1>
+
+    <h2>Introducción</h2>
+    <p>La <strong>Stream API</strong> en Java es una herramienta poderosa para procesar colecciones de datos en un estilo de programación funcional. Permite realizar operaciones como <strong>filtrar</strong>, <strong>mapear</strong> y <strong>reducir</strong> de forma fácil y eficiente.</p>
+
+    <h2>¿Cuándo usar Streams?</h2>
+    <ul>
+        <li>Cuando necesitas procesar datos en grandes cantidades (por ejemplo, <strong>filtrar</strong>, <strong>transformar</strong> o <strong>agregar</strong>).</li>
+        <li>Cuando prefieres evitar los bucles explícitos y mejorar la legibilidad del código.</li>
+        <li>Cuando prefieres un enfoque de programación funcional en lugar de un estilo imperativo.</li>
+        <li>Cuando trabajas con colecciones como <code>List</code>, <code>Set</code> o <code>Map</code>.</li>
+    </ul>
+
+    <h2>Clases que soportan Streams</h2>
+    <ul>
+        <li><code>java.util.Collection</code> (por ejemplo, <code>List</code>, <code>Set</code>)</li>
+        <li><code>java.util.stream.Stream</code></li>
+        <li><code>java.util.Arrays</code> (por ejemplo, <code>Arrays.stream()</code>)</li>
+        <li><code>java.util.Map</code> (por ejemplo, <code>entrySet()</code>, <code>keySet()</code>, <code>values()</code>)</li>
+        <li><code>java.util.Optional</code></li>
+    </ul>
+
+    <h2>Operaciones Básicas de Stream</h2>
+    <p>Los Streams soportan una amplia gama de operaciones, clasificadas como <strong>intermedias</strong> y <strong>terminales</strong>.</p>
+
+    <h3>Operaciones Intermedias</h3>
+    <ul>
+        <li><code>filter(Predicate)</code>: Filtra elementos según una condición.</li>
+        <li><code>map(Function)</code>: Transforma cada elemento.</li>
+        <li><code>sorted()</code>: Ordena los elementos.</li>
+        <li><code>distinct()</code>: Elimina elementos duplicados.</li>
+        <li><code>limit(long)</code>: Limita el número de elementos.</li>
+        <li><code>skip(long)</code>: Salta un número de elementos.</li>
+    </ul>
+
+    <h3>Operaciones Terminales</h3>
+    <ul>
+        <li><code>collect(Collector)</code>: Recoge los elementos en una colección u otro resultado.</li>
+        <li><code>forEach(Consumer)</code>: Itera sobre cada elemento.</li>
+        <li><code>reduce(BinaryOperator)</code>: Reduce los elementos a un único valor.</li>
+        <li><code>findFirst()</code>: Devuelve el primer elemento (si lo hay).</li>
+        <li><code>findAny()</code>: Devuelve cualquier elemento (útil en streams paralelos).</li>
+        <li><code>count()</code>: Cuenta el número de elementos.</li>
+        <li><code>anyMatch(Predicate)</code>, <code>allMatch(Predicate)</code>, <code>noneMatch(Predicate)</code>: Verifica condiciones en los elementos.</li>
+    </ul>
+
+    <h2>Ejemplo: Uso Básico</h2>
+    <pre><code class="language-java">import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class StreamExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "David");
+
+        // Filtrar nombres que comienzan con 'A' y recogerlos en una lista
+        List<String> filteredNames = names.stream()
+            .filter(name -> name.startsWith("A"))
+            .collect(Collectors.toList());
+
+        System.out.println(filteredNames); // Salida: [Alice]
+    }
+}
+    </code></pre>
+
+    <h2>Ejemplo: Trabajando con Mapas</h2>
+    <pre><code class="language-java">import java.util.HashMap;
+import java.util.Map;
+
+public class MapStreamExample {
+    public static void main(String[] args) {
+        Map<String, String> translations = new HashMap<>();
+        translations.put("Hello", "Hola");
+        translations.put("Goodbye", "Adiós");
+
+        // Buscar una traducción
+        String word = "Hello";
+        String translation = translations.entrySet().stream()
+            .filter(entry -> entry.getKey().equals(word))
+            .map(Map.Entry::getValue)
+            .findFirst()
+            .orElse("Traducción no encontrada");
+
+        System.out.println(translation); // Salida: Hola
+    }
+}
+    </code></pre>
+
+    <h2>Buenas Prácticas</h2>
+    <ul>
+        <li>Usa streams para mejorar la legibilidad y mantenibilidad, pero evita usarlos en exceso para bucles simples.</li>
+        <li>Ten precaución con <code>parallelStream()</code>, a menos que la tarea sea intensiva en CPU y segura para hilos.</li>
+        <li>Combina operaciones intermedias de manera eficiente para minimizar el impacto en el rendimiento.</li>
+    </ul>
+
+    <h2>Recursos</h2>
+    <ul>
+        <li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html" target="_blank">Documentación Oficial</a></li>
+        <li><a href="https://www.baeldung.com/java-8-streams" target="_blank">Guía de Baeldung sobre Streams</a></li>
+    </ul>
+    </main>
+</body>
+</html>
