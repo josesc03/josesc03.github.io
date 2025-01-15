@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apuntes Backend - LibroSwap</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-kotlin.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #3d3d3d;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #505050;
+            color: white;
+            padding: 10px 15px;
+            text-align: center;
+        }
+        section {
+            margin: 20px;
+            padding: 15px;
+            background-color: #3a3a3a;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #e5ff6f;
+        }
+        h3 {
+            color: #856fff;
+        }
+        h4  {
+            color: #6fff82;
+        }
+        ul {
+            padding-left: 20px;
+            color: #dddddd;
+        }
+        p {
+            color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Apuntes para Backend - LibroSwap</h1>
+    </header>
+    <section>
+        <h2>1. Configuración del Backend</h2>
+        <p>Usaremos <strong>Ktor</strong> como framework backend en Kotlin.</p>
+        <h3>Pasos Iniciales:</h3>
+        <ul>
+            <li>Configurar el proyecto en <code>Gradle</code>.</li>
+            <li>Añadir dependencias necesarias:</li>
+        </ul>
+        <pre><code class="language-kotlin">
+dependencies {
+    implementation("io.ktor:ktor-server-core:2.x.x")
+    implementation("io.ktor:ktor-server-netty:2.x.x")
+    implementation("org.jetbrains.exposed:exposed-core:0.41.1")
+    implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
+    implementation("mysql:mysql-connector-java:8.0.33")
+}
+        </code></pre>
+        <ul>
+            <li>Configurar la conexión a la base de datos:</li>
+        </ul>
+        <pre><code class="language-kotlin">
+import org.jetbrains.exposed.sql.Database
+
+fun connectToDatabase() {
+    Database.connect(
+        url = "jdbc:mysql://localhost:3306/libroswap",
+        driver = "com.mysql.cj.jdbc.Driver",
+        user = "root",
+        password = "1234"
+    )
+}
+        </code></pre>
+    </section>
+    <section>
+        <h2>2. Base de Datos</h2>
+        <h3>Base de Datos Local (SQLite):</h3>
+        <p>Para almacenar los chats localmente en cada cliente.</p>
+        <h3>Base de Datos del Servidor (MySQL):</h3>
+        <p>Para la gestión general de usuarios y libros.</p>
+        <h3>Ejemplo de Tablas:</h3>
+        <h4>Tabla de Usuarios:</h4>
+        <pre><code class="language-kotlin">
+object Users : Table() {
+    val id = integer("id").autoIncrement()
+    val name = varchar("name", 255)
+    val email = varchar("email", 255).uniqueIndex()
+    override val primaryKey = PrimaryKey(id)
+}
+        </code></pre>
+        <h4>Tabla de Libros:</h4>
+        <pre><code class="language-kotlin">
+object Books : Table() {
+    val id = integer("id").autoIncrement()
+    val title = varchar("title", 255)
+    val author = varchar("author", 255)
+    val userId = integer("user_id").references(Users.id)
+    override val primaryKey = PrimaryKey(id)
+}
+        </code></pre>
+    </section>
+    <section>
+        <h2>3. Endpoints de la API</h2>
+        <h3>Crear un libro (POST /books):</h3>
+        <p>Ejemplo de cómo insertar datos en la base de datos.</p>
+        <pre><code class="language-kotlin">
+post("/books") {
+    val bookRequest = call.receive<BookRequest>()
+    transaction {
+        Books.insert {
+            it[title] = bookRequest.title
+            it[author] = bookRequest.author
+            it[userId] = bookRequest.userId
+        }
+    }
+    call.respondText("Libro añadido correctamente")
+}
+        </code></pre>
+        <h3>Obtener todos los libros (GET /books):</h3>
+        <pre><code class="language-kotlin">
+get("/books") {
+    val books = transaction {
+        Books.selectAll().map {
+            BookResponse(
+                id = it[Books.id],
+                title = it[Books.title],
+                author = it[Books.author],
+                userId = it[Books.userId]
+            )
+        }
+    }
+    call.respond(books)
+}
+        </code></pre>
+        <h3>Obtener un libro por ID (GET /books/{id}):</h3>
+        <pre><code class="language-kotlin">
+get("/books/{id}") {
+    val id = call.parameters["id"]?.toIntOrNull()
+    if (id == null) {
+        call.respondText("ID inválido", status = HttpStatusCode.BadRequest)
+        return@get
+    }
+    val book = transaction {
+        Books.select { Books.id eq id }
+            .map {
+                BookResponse(
+                    id = it[Books.id],
+                    title = it[Books.title],
+                    author = it[Books.author],
+                    userId = it[Books.userId]
+                )
+            }.singleOrNull()
+    }
+    if (book != null) {
+        call.respond(book)
+    } else {
+        call.respondText("Libro no encontrado", status = HttpStatusCode.NotFound)
+    }
+}
+        </code></pre>
+    </section>
+    <section>
+        <h2>4. Serialización</h2>
+        <p>Usa <code>Kotlinx.serialization</code> para convertir objetos a JSON y viceversa.</p>
+        <pre><code class="language-kotlin">
+@Serializable
+data class BookRequest(
+    val title: String,
+    val author: String,
+    val userId: Int
+)
+
+@Serializable
+data class BookResponse(
+    val id: Int,
+    val title: String,
+    val author: String,
+    val userId: Int
+)
+        </code></pre>
+    </section>
+</body>
+</html>

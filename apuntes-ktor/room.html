@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLite con Room en el Cliente</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-kotlin.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #3d3d3d;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #505050;
+            color: white;
+            padding: 10px 15px;
+            text-align: center;
+        }
+        section {
+            margin: 20px;
+            padding: 15px;
+            background-color: #3a3a3a;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #e5ff6f;
+        }
+        h3 {
+            color: #856fff;
+        }
+        h4  {
+            color: #6fff82;
+        }
+        ul {
+            padding-left: 20px;
+            color: #dddddd;
+        }
+        p {
+            color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Ejemplo de Room en el Cliente (Android)</h1>
+    </header>
+
+    <section>
+        <h2>1. Dependencias en Gradle</h2>
+        <p>Primero, agrega las dependencias de Room en tu archivo <code>build.gradle</code> para usar Room en tu proyecto.</p>
+        <pre><code class="language-gradle">
+dependencies {
+    implementation "androidx.room:room-runtime:2.5.0"  // La librería de Room 
+    kapt "androidx.room:room-compiler:2.5.0"          // El compilador de Room 
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>2. Crear la Entidad (Modelo de Datos)</h2>
+        <p>Una entidad representa una tabla en la base de datos. Aquí estamos creando un modelo <code>Message</code> que tendrá las columnas necesarias para almacenar los mensajes de chat.</p>
+        <pre><code class="language-kotlin">
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "messages")  // Definimos la tabla 'messages' en la base de datos 
+data class Message(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,  // El ID es clave primaria y se genera automáticamente 
+    val userId: Int,  // ID del usuario que envió el mensaje 
+    val content: String,  // El contenido del mensaje 
+    val timestamp: Long  // El timestamp que marca el momento del mensaje 
+)
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>3. Crear la Base de Datos</h2>
+        <p>Ahora creamos la base de datos usando la anotación <code>@Database</code> y declaramos qué entidades están en la base de datos. Además, debemos especificar la versión.</p>
+        <pre><code class="language-kotlin">
+import androidx.room.Database
+import androidx.room.RoomDatabase
+
+@Database(entities = [Message::class], version = 1)  // Declaramos las entidades y la versión de la base de datos 
+abstract class AppDatabase : RoomDatabase() {
+    // Declaramos el DAO (Data Access Object) que nos permite interactuar con los datos.
+    abstract fun messageDao(): MessageDao  // Retorna una instancia de MessageDao para realizar consultas 
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>4. Crear el DAO (Data Access Object)</h2>
+        <p>El DAO define las consultas que podemos realizar sobre la base de datos. Aquí tenemos dos operaciones: insertar un mensaje y obtener todos los mensajes.</p>
+        <pre><code class="language-kotlin">
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+
+@Dao  // Indicamos que esta interfaz es un DAO que interactúa con la base de datos 
+interface MessageDao {
+    @Insert  // La anotación @Insert indica que esta función se usa para insertar datos en la base de datos 
+    suspend fun insertMessage(message: Message)  // Usamos suspend porque la función es asincrónica 
+
+    @Query("SELECT * FROM messages ORDER BY timestamp DESC")  // Consulta SQL para obtener todos los mensajes ordenados por timestamp 
+    suspend fun getAllMessages(): List<Message>  // Devuelve una lista de todos los mensajes 
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>5. Crear el Helper para la Base de Datos</h2>
+        <p>Esta clase gestiona el acceso a la base de datos y permite realizar operaciones como insertar o leer datos.</p>
+        <pre><code class="language-kotlin">
+class DatabaseHelper(context: Context) {
+
+    // Inicializamos la base de datos utilizando Room
+    private val db = Room.databaseBuilder(
+        context.applicationContext,
+        AppDatabase::class.java, "chat-database"  // Nombre de la base de datos 
+    ).build()  // Construimos la base de datos usando Room 
+
+    // Obtenemos el DAO para interactuar con los datos.
+    private val messageDao = db.messageDao()
+
+    // Función para insertar un mensaje en la base de datos
+    suspend fun insertMessage(userId: Int, content: String, timestamp: Long) {
+        val message = Message(userId = userId, content = content, timestamp = timestamp)
+        messageDao.insertMessage(message)  // Insertamos el mensaje en la base de datos 
+    }
+
+    // Función para obtener todos los mensajes de la base de datos
+    suspend fun getAllMessages(): List<Message> {
+        return messageDao.getAllMessages()  // Retorna todos los mensajes ordenados por timestamp 
+    }
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>6. Usar la Base de Datos en una Actividad</h2>
+        <p>Finalmente, en una actividad o fragmento, podemos usar el helper para insertar o leer los datos de la base de datos.</p>
+        <pre><code class="language-kotlin">
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var databaseHelper: DatabaseHelper
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // Inicializamos el DatabaseHelper
+        databaseHelper = DatabaseHelper(this)
+
+        // Insertamos un mensaje
+        GlobalScope.launch {
+            databaseHelper.insertMessage(userId = 1, content = "Hola Mundo", timestamp = System.currentTimeMillis())
+        }
+
+        // Obtenemos los mensajes y los mostramos
+        GlobalScope.launch {
+            val messages = databaseHelper.getAllMessages()
+            messages.forEach {
+                println(it.content)  // Imprimimos el contenido de cada mensaje 
+            }
+        }
+    }
+}
+        </code></pre>
+    </section>
+</body>
+</html>
