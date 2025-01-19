@@ -262,6 +262,78 @@ public class ClienteServidorPeer {
 }
             </code></pre>
         </section>
+
+        <section>
+            <h2>Técnicas avanzadas con sockets: Sockets de Multidifusión</h2>
+            <p>Los sockets de multidifusión permiten enviar la misma información a un grupo de clientes al mismo tiempo. Esto se logra creando un grupo de multidifusión con una dirección IP de clase D (rango 224.0.0.0 a 239.255.255.255, excepto 224.0.0.0) y un puerto UDP común para los componentes del grupo.</p>
+            <pre><code class="hljs language-java">import java.net.*;
+        import java.util.Scanner;
+        
+        public class ChatMulticast {
+        
+            static final String IP_GRUPO = "225.0.0.1"; // Dirección IP del grupo de multidifusión
+            static final int PUERTO_GRUPO = 6000; // Puerto para la comunicación
+        
+            public static void main(String[] args) {
+                Scanner scanner = new Scanner(System.in);
+        
+                System.out.println("Elige una opción:");
+                System.out.println("1. Unirse al chat");
+                System.out.println("2. Salir");
+                int opcion = scanner.nextInt();
+                scanner.nextLine(); // Limpiar el buffer
+        
+                if (opcion == 1) {
+                    new Thread(() -> recibirMensajes()).start(); // Hilo para recibir mensajes
+                    enviarMensajes(scanner); // Enviar mensajes desde el hilo principal
+                } else {
+                    System.out.println("Saliendo del chat...");
+                }
+            }
+        
+            public static void recibirMensajes() {
+                try (MulticastSocket socket = new MulticastSocket(PUERTO_GRUPO)) {
+                    InetAddress grupo = InetAddress.getByName(IP_GRUPO);
+                    socket.joinGroup(grupo);
+                    System.out.println("Te has unido al chat del grupo " + IP_GRUPO);
+        
+                    while (true) {
+                        byte[] buffer = new byte[1024];
+                        DatagramPacket paquete = new DatagramPacket(buffer, buffer.length);
+                        socket.receive(paquete);
+                        String mensaje = new String(paquete.getData(), 0, paquete.getLength());
+                        System.out.println("Mensaje recibido: " + mensaje);
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error al recibir mensajes: " + e.getMessage());
+                }
+            }
+        
+            public static void enviarMensajes(Scanner scanner) {
+                try (MulticastSocket socket = new MulticastSocket()) {
+                    InetAddress grupo = InetAddress.getByName(IP_GRUPO);
+        
+                    while (true) {
+                        System.out.print("Tú: ");
+                        String mensaje = scanner.nextLine();
+        
+                        if (mensaje.equalsIgnoreCase("salir")) {
+                            System.out.println("Saliendo del chat...");
+                            break;
+                        }
+        
+                        byte[] buffer = mensaje.getBytes();
+                        DatagramPacket paquete = new DatagramPacket(buffer, buffer.length, grupo, PUERTO_GRUPO);
+                        socket.send(paquete);
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error al enviar mensajes: " + e.getMessage());
+                }
+            }
+        }</code></pre>
+            <p><strong>Nota:</strong> Este programa permite a los usuarios unirse a un chat de multidifusión. Los mensajes enviados se reciben por todos los participantes conectados al grupo. Es un ejemplo básico para ilustrar el funcionamiento de los sockets de multidifusión.</p>
+        </section>
+        
     </main>
 </body>
 </html>
