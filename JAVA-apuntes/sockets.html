@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,6 +51,10 @@
             border-radius: 5px;
             overflow-x: auto;
         }
+        .note {
+            color: #ffa726;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -59,134 +63,135 @@
     </header>
     <main>
         <a href="index.html"><button style="padding: 10px;border-radius: 10px;">Go back</button></a>
+
+        <!-- Sección Cliente TCP -->
         <section>
-            <h2>Ejemplo de socket del lado cliente</h2>
-            <p>Este código muestra como enviar y recibir datos de un servidor a partir de un socket del lado cliente.</p>
+            <h2>Ejemplo de Socket del lado cliente (TCP)</h2>
+            <p>Este código muestra cómo enviar y recibir datos de un servidor utilizando un socket del lado cliente.</p>
             <pre><code class="hljs language-java">public class ClienteConcurrente {
-    static final String Host = "localhost"; //direccion IP o Host servidor
-    static final int Port = 2000; //puerto en el que trabaja el servidor
+    static final String Host = "localhost"; // Dirección IP o nombre del servidor
+    static final int Port = 2000; // Puerto en el que trabaja el servidor
 
     public ClienteConcurrente() {
         try (
-                Socket skCliente = new Socket( Host, Port ); //conexion al servidor por host y puerto
+                Socket skCliente = new Socket(Host, Port); // Conexión al servidor por host y puerto
 
                 // flujo_entrada: permite recibir datos desde el servidor.
-                DataInputStream flujo_entrada = new DataInputStream( skCliente.getInputStream() );
+                DataInputStream flujo_entrada = new DataInputStream(skCliente.getInputStream());
                 // flujo_salida: permite enviar datos al servidor.
-                DataOutputStream flujo_salida = new DataOutputStream( skCliente.getOutputStream() ) ) {
-            System.out.println( "Se ha conectado al servidor" );
+                DataOutputStream flujo_salida = new DataOutputStream(skCliente.getOutputStream())) {
+            System.out.println("Se ha conectado al servidor");
 
-            //Tareas que realiza el cliente
-            String datos = "Envio de datos"; //creacion de datos a enviar
-            flujo_salida.writeUTF( datos ); //envio de datos
-            System.out.println( "Datos enviados: " + datos );
+            // Tareas que realiza el cliente
+            String datos = "Envio de datos"; // Creación de datos a enviar
+            flujo_salida.writeUTF(datos); // Envío de datos
+            System.out.println("Datos enviados: " + datos);
 
-            String datosRecogidos = flujo_entrada.readUTF(); //recogida de datos
-            System.out.println( "Se han recibido los datos" );
-            System.out.println( "Datos recogidos: " + datosRecogidos );
+            String datosRecogidos = flujo_entrada.readUTF(); // Recogida de datos
+            System.out.println("Se han recibido los datos");
+            System.out.println("Datos recogidos: " + datosRecogidos);
 
-            //Se cierra la conexion
+            // Se cierra la conexión
             skCliente.close();
-            System.out.println( "Se ha desconectado del servidor" );
+            System.out.println("Se ha desconectado del servidor");
 
-        } catch ( Exception e ) {
-            System.out.println( e.getMessage() );
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
-    public static void main( String[] args ) {
+    public static void main(String[] args) {
         new ClienteConcurrente();
     }
 }</code></pre>
+            <p class="note">Nota: Este ejemplo utiliza TCP, que es un protocolo orientado a la conexión. Asegúrate de que el servidor esté activo antes de ejecutar el cliente.</p>
         </section>
 
+        <!-- Sección Servidor TCP -->
         <section>
-            <h2>Ejemplo de ServerSocket del lado servidor</h2>
-            <p>Este código muestra como enviar y recibir datos de un cliente a partir de un socket del lado servidor.</p>
-            <p style="font-size: small;">En este caso usamos la propia clase como Thread para gestionar el socket del cliente</p>
-            <pre><code class="hljs language-java">
-public class ServidorConcurrente extends Thread {
-    Socket skCliente; //socket cliente
-    static final int Puerto = 2000; //puerto que abre el servidor
+            <h2>Ejemplo de ServerSocket del lado servidor (TCP)</h2>
+            <p>Este código muestra cómo recibir y enviar datos a un cliente utilizando un socket del lado servidor.</p>
+            <p style="font-size: small;">En este caso, la clase actúa como un hilo para gestionar múltiples clientes.</p>
+            <pre><code class="hljs language-java">public class ServidorConcurrente extends Thread {
+    Socket skCliente; // Socket del cliente
+    static final int Puerto = 2000; // Puerto que abre el servidor
 
-    public ServidorConcurrente( Socket skCliente ) {
-        this.skCliente = skCliente; //inicializacion del socket cliente para cuando se llame al hilo gestor
+    public ServidorConcurrente(Socket skCliente) {
+        this.skCliente = skCliente; // Inicialización del socket cliente
     }
 
-    public static void main( String[] args ) {
+    public static void main(String[] args) {
         try (
-                //Inicializacion del servidor
-                ServerSocket skServidor = new ServerSocket( Puerto );
+                // Inicialización del servidor
+                ServerSocket skServidor = new ServerSocket(Puerto);
         ) {
-            System.out.println( "Servidor iniciado" );
-            System.out.println( "Escucho el puerto " + Puerto );
+            System.out.println("Servidor iniciado");
+            System.out.println("Escucho el puerto " + Puerto);
 
-            while ( true ) {
-                //Conexion de un cliente
-                Socket skCliente = skServidor.accept(); //espera hasta que un cliente se conecte
-                System.out.println( "Cliente conectado" );
+            while (true) {
+                // Conexión de un cliente
+                Socket skCliente = skServidor.accept(); // Espera hasta que un cliente se conecte
+                System.out.println("Cliente conectado");
 
-                //Atencion de un cliente por un hilo
-                new ServidorConcurrente( skCliente ).start();
-
+                // Atención de un cliente por un hilo
+                new ServidorConcurrente(skCliente).start();
             }
 
-        } catch ( Exception e ) {
-            System.out.println( e.getMessage() );
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
     @Override
     public void run() {
         try (
-            // Se crean flujos de entrada y salida para la comunicación con el cliente.
-            // flujo_entrada: permite recibir datos desde el cliente.
-            // flujo_salida: permite enviar datos al cliente.
-            DataInputStream flujo_entrada = new DataInputStream( skCliente.getInputStream() );
-            DataOutputStream flujo_salida = new DataOutputStream( skCliente.getOutputStream() );
+                // Se crean flujos de entrada y salida para la comunicación con el cliente.
+                DataInputStream flujo_entrada = new DataInputStream(skCliente.getInputStream());
+                DataOutputStream flujo_salida = new DataOutputStream(skCliente.getOutputStream());
         ) {
-            System.out.println( "Se ha conectado el cliente exitosamente" );
+            System.out.println("Se ha conectado el cliente exitosamente");
 
-            //Atencion de la peticion del cliente
-            String datos = flujo_entrada.readUTF(); //recogida de datos
-            System.out.println( "Datos recogidos: " + datos );
+            // Atención de la petición del cliente
+            String datos = flujo_entrada.readUTF(); // Recogida de datos
+            System.out.println("Datos recogidos: " + datos);
 
-            datos = datos.toUpperCase(); //tranformacion de datos
-            System.out.println( "Se han transformado los datos correctamente" );
+            datos = datos.toUpperCase(); // Transformación de datos
+            System.out.println("Se han transformado los datos correctamente");
 
-            flujo_salida.writeUTF( datos ); //envio de datos
-            System.out.println( "Se han enviado los datos transformados correctamente" );
+            flujo_salida.writeUTF(datos); // Envío de datos
+            System.out.println("Se han enviado los datos transformados correctamente");
 
-            //Se cierra la conexion
+            // Se cierra la conexión
             skCliente.close();
-            System.out.println( "Cliente desconectado" );
+            System.out.println("Cliente desconectado");
 
-        } catch ( Exception e ) {
-            System.err.println( e.getMessage() );
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
     }
 }</code></pre>
+            <p class="note">Nota: Este servidor es concurrente, lo que significa que puede manejar múltiples clientes simultáneamente gracias al uso de hilos.</p>
         </section>
 
+        <!-- Sección Conexión Peer-to-Peer con Datagramas (UDP) -->
         <section>
-            <h2>Conexión Peer-to-Peer con Datagramas</h2>
-            <p>Se utiliza la clase <code>DatagramSocket</code> para enviar y recibir paquetes de datos.</p>
-            <pre><code class="hljs language-java">
-public class ClienteServidorPeer {
+            <h2>Conexión Peer-to-Peer con Datagramas (UDP)</h2>
+            <p>Este código muestra cómo enviar y recibir paquetes de datos utilizando la clase <code>DatagramSocket</code>.</p>
+            <pre><code class="hljs language-java">public class ClienteServidorPeer {
 
-    static final int PUERTO = 2000; // Puerto de comunicación para el envío de los datagramas
+    static final int PUERTO = 2000; // Puerto de comunicación para el envío de datagramas
 
     // Función que actúa como servidor
     public static void servidor() {
         try (DatagramSocket socket = new DatagramSocket(PUERTO)) {
             System.out.println("Servidor escuchando en el puerto " + PUERTO);
 
-            byte[] bufferRecepcion = new byte[1024]; // Buffer donde se almacenarán los datos recibidos
+            byte[] bufferRecepcion = new byte[1024]; // Buffer para almacenar los datos recibidos
 
             while (true) {
                 // Recibir datos del cliente
                 DatagramPacket paqueteRecepcion = new DatagramPacket(bufferRecepcion, bufferRecepcion.length);
-                socket.receive(paqueteRecepcion); // Espera hasta recibir un datagrama del cliente
+                socket.receive(paqueteRecepcion); // Espera hasta recibir un datagrama
                 String mensajeRecibido = new String(paqueteRecepcion.getData(), 0, paqueteRecepcion.getLength());
                 System.out.println("Servidor recibió: " + mensajeRecibido);
 
@@ -197,7 +202,7 @@ public class ClienteServidorPeer {
                 // Convertir el mensaje transformado a un arreglo de bytes
                 byte[] mensajeBytes = mensajeTransformado.getBytes();
 
-                // Obtener la dirección IP y puerto del cliente desde el datagrama recibido
+                // Obtener la dirección IP y puerto del cliente
                 InetAddress direccionCliente = paqueteRecepcion.getAddress();
                 int puertoCliente = paqueteRecepcion.getPort();
 
@@ -214,7 +219,7 @@ public class ClienteServidorPeer {
 
     // Función que actúa como cliente
     public static void cliente() {
-        try ( DatagramSocket socket = new DatagramSocket()) {
+        try (DatagramSocket socket = new DatagramSocket()) {
             // Dirección del servidor (peer)
             InetAddress direccionServidor = InetAddress.getByName("localhost"); // Dirección IP del servidor
 
@@ -233,7 +238,7 @@ public class ClienteServidorPeer {
             // Recibir la respuesta del servidor
             byte[] bufferRecibo = new byte[1024]; // Buffer para recibir la respuesta del servidor
             DatagramPacket paqueteRecepcion = new DatagramPacket(bufferRecibo, bufferRecibo.length);
-            socket.receive(paqueteRecepcion); // Esperar a recibir el mensaje transformado por el servidor
+            socket.receive(paqueteRecepcion); // Esperar a recibir el mensaje transformado
             String mensajeRecibido = new String(paqueteRecepcion.getData(), 0, paqueteRecepcion.getLength());
             System.out.println("Cliente recibió: " + mensajeRecibido); // Imprimir la respuesta
 
@@ -259,81 +264,81 @@ public class ClienteServidorPeer {
             System.out.println("Opción no válida.");
         }
     }
-}
-            </code></pre>
+}</code></pre>
+            <p class="note">Nota: Este ejemplo utiliza UDP, que es un protocolo no orientado a la conexión. Es más rápido que TCP pero menos confiable.</p>
         </section>
 
+        <!-- Sección Sockets de Multidifusión -->
         <section>
-            <h2>Técnicas avanzadas con sockets: Sockets de Multidifusión</h2>
-            <p>Los sockets de multidifusión permiten enviar la misma información a un grupo de clientes al mismo tiempo. Esto se logra creando un grupo de multidifusión con una dirección IP de clase D (rango 224.0.0.0 a 239.255.255.255, excepto 224.0.0.0) y un puerto UDP común para los componentes del grupo.</p>
+            <h2>Sockets de Multidifusión</h2>
+            <p>Los sockets de multidifusión permiten enviar la misma información a un grupo de clientes al mismo tiempo. Esto se logra utilizando una dirección IP de clase D (rango 224.0.0.0 a 239.255.255.255).</p>
             <pre><code class="hljs language-java">import java.net.*;
-        import java.util.Scanner;
-        
-        public class ChatMulticast {
-        
-            static final String IP_GRUPO = "225.0.0.1"; // Dirección IP del grupo de multidifusión
-            static final int PUERTO_GRUPO = 6000; // Puerto para la comunicación
-        
-            public static void main(String[] args) {
-                Scanner scanner = new Scanner(System.in);
-        
-                System.out.println("Elige una opción:");
-                System.out.println("1. Unirse al chat");
-                System.out.println("2. Salir");
-                int opcion = scanner.nextInt();
-                scanner.nextLine(); // Limpiar el buffer
-        
-                if (opcion == 1) {
-                    new Thread(() -> recibirMensajes()).start(); // Hilo para recibir mensajes
-                    enviarMensajes(scanner); // Enviar mensajes desde el hilo principal
-                } else {
+import java.util.Scanner;
+
+public class ChatMulticast {
+
+    static final String IP_GRUPO = "225.0.0.1"; // Dirección IP del grupo de multidifusión
+    static final int PUERTO_GRUPO = 6000; // Puerto para la comunicación
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Elige una opción:");
+        System.out.println("1. Unirse al chat");
+        System.out.println("2. Salir");
+        int opcion = scanner.nextInt();
+        scanner.nextLine(); // Limpiar el buffer
+
+        if (opcion == 1) {
+            new Thread(() -> recibirMensajes()).start(); // Hilo para recibir mensajes
+            enviarMensajes(scanner); // Enviar mensajes desde el hilo principal
+        } else {
+            System.out.println("Saliendo del chat...");
+        }
+    }
+
+    public static void recibirMensajes() {
+        try (MulticastSocket socket = new MulticastSocket(PUERTO_GRUPO)) {
+            InetAddress grupo = InetAddress.getByName(IP_GRUPO);
+            socket.joinGroup(grupo);
+            System.out.println("Te has unido al chat del grupo " + IP_GRUPO);
+
+            while (true) {
+                byte[] buffer = new byte[1024];
+                DatagramPacket paquete = new DatagramPacket(buffer, buffer.length);
+                socket.receive(paquete);
+                String mensaje = new String(paquete.getData(), 0, paquete.getLength());
+                System.out.println("Mensaje recibido: " + mensaje);
+            }
+        } catch (Exception e) {
+            System.out.println("Error al recibir mensajes: " + e.getMessage());
+        }
+    }
+
+    public static void enviarMensajes(Scanner scanner) {
+        try (MulticastSocket socket = new MulticastSocket()) {
+            InetAddress grupo = InetAddress.getByName(IP_GRUPO);
+
+            while (true) {
+                System.out.print("Tú: ");
+                String mensaje = scanner.nextLine();
+
+                if (mensaje.equalsIgnoreCase("salir")) {
                     System.out.println("Saliendo del chat...");
+                    break;
                 }
+
+                byte[] buffer = mensaje.getBytes();
+                DatagramPacket paquete = new DatagramPacket(buffer, buffer.length, grupo, PUERTO_GRUPO);
+                socket.send(paquete);
             }
-        
-            public static void recibirMensajes() {
-                try (MulticastSocket socket = new MulticastSocket(PUERTO_GRUPO)) {
-                    InetAddress grupo = InetAddress.getByName(IP_GRUPO);
-                    socket.joinGroup(grupo);
-                    System.out.println("Te has unido al chat del grupo " + IP_GRUPO);
-        
-                    while (true) {
-                        byte[] buffer = new byte[1024];
-                        DatagramPacket paquete = new DatagramPacket(buffer, buffer.length);
-                        socket.receive(paquete);
-                        String mensaje = new String(paquete.getData(), 0, paquete.getLength());
-                        System.out.println("Mensaje recibido: " + mensaje);
-                    }
-                } catch (Exception e) {
-                    System.out.println("Error al recibir mensajes: " + e.getMessage());
-                }
-            }
-        
-            public static void enviarMensajes(Scanner scanner) {
-                try (MulticastSocket socket = new MulticastSocket()) {
-                    InetAddress grupo = InetAddress.getByName(IP_GRUPO);
-        
-                    while (true) {
-                        System.out.print("Tú: ");
-                        String mensaje = scanner.nextLine();
-        
-                        if (mensaje.equalsIgnoreCase("salir")) {
-                            System.out.println("Saliendo del chat...");
-                            break;
-                        }
-        
-                        byte[] buffer = mensaje.getBytes();
-                        DatagramPacket paquete = new DatagramPacket(buffer, buffer.length, grupo, PUERTO_GRUPO);
-                        socket.send(paquete);
-                    }
-                } catch (Exception e) {
-                    System.out.println("Error al enviar mensajes: " + e.getMessage());
-                }
-            }
-        }</code></pre>
-            <p><strong>Nota:</strong> Este programa permite a los usuarios unirse a un chat de multidifusión. Los mensajes enviados se reciben por todos los participantes conectados al grupo. Es un ejemplo básico para ilustrar el funcionamiento de los sockets de multidifusión.</p>
+        } catch (Exception e) {
+            System.out.println("Error al enviar mensajes: " + e.getMessage());
+        }
+    }
+}</code></pre>
+            <p class="note">Nota: Este programa permite a los usuarios unirse a un chat de multidifusión. Los mensajes enviados se reciben por todos los participantes conectados al grupo.</p>
         </section>
-        
     </main>
 </body>
 </html>
