@@ -73,6 +73,8 @@ public class ClienteHTTP {
             // Crear una URL para conectarse a un servicio web
             URL url = new URL("https://jsonplaceholder.typicode.com/posts");
             URLConnection conexion = url.openConnection();
+//          HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+//          conexion.setRequestMethod("GET"); // Especificas el método GET
             
             // Leer la respuesta del servidor
             try (BufferedReader in = new BufferedReader(
@@ -169,6 +171,8 @@ public class ProcesamientoJSON {
             // Crear una URL para conectarse a un servicio web que devuelve un JSONArray
             URL url = new URL("https://jsonplaceholder.typicode.com/posts");
             URLConnection conexion = url.openConnection();
+//          HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+//          conexion.setRequestMethod("GET"); // Especificas el método GET
             
             // Leer la respuesta del servidor
             try (BufferedReader in = new BufferedReader(
