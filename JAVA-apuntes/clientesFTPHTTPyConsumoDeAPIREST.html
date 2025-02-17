@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Servicios en Red</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/monokai.min.css" rel="stylesheet">
+    <script>hljs.highlightAll();</script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        header {
+            background-color: #1f1f1f;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+        }
+        main {
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        section {
+            margin-bottom: 3rem;
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        h2 {
+            color: #bb86fc;
+            margin-top: 0;
+        }
+        pre {
+            background-color: #1e1e1e;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .note {
+            color: #ffa726;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Guía de Servicios en Red</h1>
+    </header>
+    <main>
+        <!-- Sección Cliente HTTP -->
+        <section>
+            <h2>Cliente HTTP con URLConnection</h2>
+            <p>Ejemplo de conexión HTTP para recuperar contenido web:</p>
+            <pre><code class="java">
+import java.net.*;
+import java.io.*;
+
+public class ClienteHTTP {
+    public static void main(String[] args) throws Exception {
+        URL url = new URL("https://www.ejemplo.com");
+        URLConnection conexion = url.openConnection();
+        
+        try (BufferedReader in = new BufferedReader(
+            new InputStreamReader(conexion.getInputStream()))) {
+            
+            String linea;
+            while ((linea = in.readLine()) != null) {
+                System.out.println(linea);
+            }
+        }
+    }
+}
+            </code></pre>
+            <p class="note">Nota: Usa las clases URL y URLConnection para manejar solicitudes/respuestas HTTP.</p>
+        </section>
+
+        <!-- Sección Cliente FTP -->
+        <section>
+            <h2>Cliente FTP con Apache Commons Net</h2>
+            <p>Descarga de archivos desde un servidor FTP:</p>
+            <pre><code class="java">
+import org.apache.commons.net.ftp.*;
+import java.io.*;
+
+public class ClienteFTP {
+    public static void main(String[] args) {
+        FTPClient cliente = new FTPClient();
+        try {
+            cliente.connect("ftp.ejemplo.com");
+            cliente.login("anonymous", "");
+            
+            // Descargar archivo
+            try (FileOutputStream fos = new FileOutputStream("archivo.txt")) {
+                cliente.retrieveFile("/ruta/archivo.txt", fos);
+            }
+            
+            cliente.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+            </code></pre>
+            <p class="note">Requiere la biblioteca Apache Commons Net.</p>
+        </section>
+
+        <!-- Sección Servidor HTTP -->
+        <section>
+            <h2>Servidor HTTP Básico</h2>
+            <p>Servidor que responde a solicitudes GET:</p>
+            <pre><code class="java">
+import java.net.*;
+import java.io.*;
+
+public class ServidorHTTP {
+    public static void main(String[] args) throws IOException {
+        ServerSocket server = new ServerSocket(8080);
+        System.out.println("Servidor iniciado en puerto 8080");
+        
+        while (true) {
+            Socket cliente = server.accept();
+            try (PrintWriter out = new PrintWriter(cliente.getOutputStream())) {
+                out.println("HTTP/1.1 200 OK");
+                out.println("Content-Type: text/html");
+                out.println("\r\n");
+                out.println("&lt;h1&gt;Hola desde el servidor!&lt;/h1&gt;");
+            }
+        }
+    }
+}
+            </code></pre>
+        </section>
+
+        <!-- Sección API REST y JSON -->
+        <section>
+            <h2>Consumo de API REST y Procesamiento JSON</h2>
+            <p>Ejemplo usando HttpURLConnection y org.json:</p>
+            <pre><code class="java">
+import java.net.*;
+import java.io.*;
+import org.json.*;
+
+public class ConsumoAPI {
+    public static void main(String[] args) throws Exception {
+        URL url = new URL("https://jsonplaceholder.typicode.com/users/1");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        
+        if (conn.getResponseCode() == 200) {
+            BufferedReader reader = new BufferedReader(
+                new InputStreamReader(conn.getInputStream()));
+            
+            StringBuilder respuesta = new StringBuilder();
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                respuesta.append(linea);
+            }
+            
+            JSONObject json = new JSONObject(respuesta.toString());
+            System.out.println("Nombre: " + json.getString("name"));
+        }
+        conn.disconnect();
+    }
+}
+            </code></pre>
+            <p class="note">Requiere la biblioteca org.json para procesar JSON.</p>
+        </section>
+    </main>
+</body>
+</html>
