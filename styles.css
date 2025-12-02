@@ -3,9 +3,10 @@ html {
 }
 
 body {
-    background-color: #202020;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
     margin: 0;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    min-height: 100vh;
 }
 
 .content {
@@ -24,12 +25,17 @@ body {
     border-radius: 15px;
     padding: 0 12px;
     font-size: small;
-    background-color: rgba(180, 219, 255, 0.2);
+    background-color: rgba(180, 219, 255, 0.15);
+    transition: all 0.3s ease;
     &>svg {
         width: 20px;
         &>g {
             stroke: rgb(180, 219, 255);
         }
+    }
+    &:hover {
+        background-color: rgba(180, 219, 255, 0.25);
+        transform: translateY(-2px);
     }
 }
 
@@ -43,35 +49,49 @@ body {
     align-items: center;
     margin: 25px 10px;
     padding: 20px;
-    outline: 2px solid #d2d2d2;
-    border-radius: 15px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+    backdrop-filter: blur(10px);
+    outline: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .photo {
     border-radius: 50%;
-    width: 200px;
+    width: 180px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.photo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 30px rgba(100, 200, 255, 0.3);
 }
 
 h1 {
-    margin: 0;
-    width: fit-content;
-    font-size: 2rem;
+    margin: 10px 0 5px 0;
+    text-align: center;
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, #fff 0%, #a8d8ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 h2 {
     margin: 0;
-    width: fit-content;
+    text-align: center;
     margin-bottom: 1rem;
-    color: rgb(205, 255, 220);
-    font-size: 1rem;
-
-
+    color: rgb(144, 238, 144);
+    font-size: 0.95rem;
+    font-weight: 500;
 }
 
 .redesnav {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
     margin-bottom: 1.5rem;
 }
 
@@ -79,20 +99,21 @@ h2 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    outline: 2px #d2d2d2 solid;
-    border-radius: 15px;
+    outline: 2px rgba(255, 255, 255, 0.2) solid;
+    border-radius: 12px;
     gap: 10px;
     width: 150px;
-    color: #d2d2d2;
-    padding: 5px 25px;
-    background-color: rgba(255, 255, 255, 0.10);
-    transition: scale 0.2s ease-in-out;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 8px 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+    transition: all 0.3s ease;
 
     &:hover {
-        outline: 2px rgba(255, 255, 255, 1) solid;
+        outline: 2px rgba(100, 200, 255, 0.5) solid;
         color: rgba(255, 255, 255, 1);
-        background-color: rgba(255, 255, 255, 0.12);
-        scale: 1.02;
+        background: linear-gradient(135deg, rgba(100, 200, 255, 0.15) 0%, rgba(100, 200, 255, 0.05) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(100, 200, 255, 0.2);
     }
 }
 
@@ -102,20 +123,37 @@ a {
 
 .tecnologiasnav {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    row-gap: 20px;
-    column-gap: 50px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.tecnologias {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.tecnologias:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.15);
 }
 
 .svgtech {
+    width: 32px;
+    height: 32px;
+    transition: all 0.3s ease;
+    
     &:hover {
         &>path {
-            fill: rgba(255, 255, 255, 1);
+            fill: rgba(100, 200, 255, 1);
         }
     }
 
     &>path {
-        fill: #d2d2d2;
+        fill: rgba(255, 255, 255, 0.7);
     }
 }
 
@@ -126,15 +164,18 @@ main {
     margin: 25px 10px;
     padding: 0 275px;
     padding-top: 0;
-    outline: 2px solid #d2d2d2;
-    border-radius: 15px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+    backdrop-filter: blur(10px);
+    outline: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
     width: 100%;
     height: calc(100vh - 50px);
     overflow-y: scroll;
     overflow-x: hidden;
     scroll-behavior: smooth;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+    scrollbar-color: rgba(100, 200, 255, 0.5) transparent;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     
     &>nav>a>svg {
         display: none;
@@ -144,33 +185,41 @@ main {
 .mainnav {
     position: sticky;
     top: 0;
-    backdrop-filter: blur(2px);
-    box-shadow: 0 0 0 2px #d2d2d2;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
     z-index: 10;
-    background-color: rgb(32, 32, 32, .8);
-    border-radius: 0 0 15px 15px;
+    background: linear-gradient(180deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.9) 100%);
+    border-radius: 0 0 20px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 5px 10px;
 
     &>a {
-        border-left: 2px #d2d2d2 solid;
-        padding: 0 10px;
-        margin: 10px 0;
+        border-left: 1px rgba(255, 255, 255, 0.2) solid;
+        padding: 0 15px;
+        margin: 8px 0;
         display: inline-block;
         color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s ease;
 
         &>.texto {
-            transition: scale 0.2s ease-in-out;
+            transition: all 0.3s ease;
             display: block;
         }
 
         &:hover {
+            color: rgba(100, 200, 255, 1);
             &>.texto {
-                color: rgba(255, 255, 255, 0.9);
-                scale: 1.05;
+                color: rgba(100, 200, 255, 1);
+                transform: translateY(-2px);
             }
         }
 
         &>svg {
-            transition: scale 0.2s ease-in-out;
+            transition: all 0.3s ease;
         }
     }
 
@@ -182,6 +231,9 @@ main {
 @media screen and (max-width: 1245px) {
     main {
         padding: 0 200px;
+    }
+    .tecnologiasnav {
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 @media screen and (max-width: 1095px) {
@@ -204,7 +256,7 @@ main {
 }
 @media screen and (max-width: 579px) {
     main {
-        padding: 0 40px;
+        padding: 0 30px;
         &>nav>a>.texto {
             display: none !important;
         }
@@ -214,7 +266,7 @@ main {
         &>nav>a {
             &:hover {
                 &>svg {
-                    scale: 1.1;
+                    transform: scale(1.1);
                 }
             }
         }
@@ -223,14 +275,21 @@ main {
     .sidebar {
         display: none;
     }
+    .skills-container {
+        grid-template-columns: 1fr !important;
+    }
+    .skill-tags {
+        justify-content: center;
+    }
 }
 
 @media screen and (max-width: 367px) {
     main {
+        padding: 0 15px;
         &>nav>a {
             &:hover {
                 &>svg {
-                    scale: 1.1;
+                    transform: scale(1.1);
                 }
             }
         }
@@ -248,15 +307,120 @@ main {
 .introduccion {
     margin-top: 50px;
     text-wrap: balance;
+    text-align: center;
+    max-width: 700px;
     &>p{
         font-size: 18px;
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.85);
     }
     &>:first-child {
-        font-size: 25px;
+        font-size: 28px;
+        margin-bottom: 20px;
     }
 }
 
+/* Highlight classes */
+.highlight-yellow {
+    color: rgb(255, 230, 100);
+    font-weight: 600;
+}
+
+.highlight-green {
+    color: rgb(144, 238, 144);
+    font-weight: 600;
+}
+
+.highlight-cyan {
+    color: rgb(100, 220, 255);
+    font-weight: 600;
+}
+
+.highlight-pink {
+    color: rgb(255, 180, 200);
+    font-weight: 600;
+}
+
+.section-title {
+    font-size: 28px !important;
+    font-weight: 700;
+    text-align: center;
+    padding-top: 50px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    background: linear-gradient(135deg, #fff 0%, #a8d8ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Competencias Section */
+#competencias {
+    width: 100%;
+    max-width: 900px;
+}
+
+.skills-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 10px;
+}
+
+.skill-category {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.skill-category:hover {
+    transform: translateY(-3px);
+    border-color: rgba(100, 200, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(100, 200, 255, 0.15);
+}
+
+.skill-category-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgb(100, 200, 255);
+    margin: 0 0 15px 0;
+}
+
+.skill-category-title svg {
+    flex-shrink: 0;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.skill-tag {
+    background: linear-gradient(135deg, rgba(100, 200, 255, 0.2) 0%, rgba(100, 200, 255, 0.1) 100%);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid rgba(100, 200, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.skill-tag:hover {
+    background: linear-gradient(135deg, rgba(100, 200, 255, 0.3) 0%, rgba(100, 200, 255, 0.2) 100%);
+    transform: scale(1.05);
+}
+
+/* Experience Section */
 #experiencia {
+    width: 100%;
+    max-width: 800px;
     &>:first-child {
         font-size: 25px;
         padding-top: 50px;
@@ -267,7 +431,75 @@ main {
     }
 }
 
+.experience-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding: 10px;
+}
+
+.experience-item {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 25px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.experience-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, rgb(100, 200, 255) 0%, rgb(144, 238, 144) 100%);
+    border-radius: 4px 0 0 4px;
+}
+
+.experience-item:hover {
+    transform: translateX(5px);
+    border-color: rgba(100, 200, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(100, 200, 255, 0.1);
+}
+
+.experience-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.experience-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: white;
+    font-weight: 600;
+}
+
+.experience-location,
+.experience-type {
+    font-size: 0.85rem;
+    color: rgb(144, 238, 144);
+    font-weight: 500;
+    background: rgba(144, 238, 144, 0.1);
+    padding: 4px 12px;
+    border-radius: 12px;
+}
+
+.experience-description {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+/* Projects Section */
 #proyectos {
+    width: 100%;
     &>:first-child {
         font-size: 25px;
         padding-top: 50px;
@@ -278,7 +510,10 @@ main {
     }
 }
 
+/* About Section */
 #sobremi {
+    width: 100%;
+    max-width: 700px;
     &>:first-child {
         font-size: 25px;
         padding-top: 50px;
@@ -289,7 +524,22 @@ main {
     }
 }
 
+.about-content {
+    padding: 20px;
+    &>p {
+        font-size: 1rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.85);
+        margin-bottom: 20px;
+    }
+}
+
+/* Contact Section */
 #contacto {
+    padding: 40px 20px;
+    text-align: center;
+    width: 100%;
+    max-width: 700px;
     &>:first-child {
         font-size: 25px;
         padding-top: 50px;
@@ -298,6 +548,11 @@ main {
     &>p {
         font-size: 18px;
     }
+}
+
+.contact-intro {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 30px;
 }
 
 carousel {
@@ -369,7 +624,7 @@ slide {
     position: relative;
     display: block;
     width: 100%;
-    filter: drop-shadow(0 0 3px black);
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
     transition: all .3s ease;
     padding: 5px;
 
@@ -379,7 +634,7 @@ slide {
     }
     
     &.active:hover {
-        scale: 1.03;
+        transform: scale(1.03);
         cursor: pointer;
     }
 
@@ -396,8 +651,8 @@ slide {
         width: calc(100% - 10px);
         height: calc(100% - 10px);
         background-image: linear-gradient(0deg,
-        rgba(0,0,0, .8) 0%,
-        rgba(0,0,0, .8) 27%,
+        rgba(0,0,0, .85) 0%,
+        rgba(0,0,0, .85) 27%,
         rgba(0,0,0, 0) 27%,
         rgba(0, 0, 0, 0) 100%
         );
@@ -414,20 +669,17 @@ slide {
         font-weight: 600;
         font-size: 2vw;
         color: white;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
 }
 
-#contacto {
-    padding: 40px;
-    text-align: center;
-}
-
+/* Contact Cards */
 .contact-cards {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     gap: 20px;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .contact-card {
@@ -435,31 +687,45 @@ slide {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 150px;
-    height: 50px;
-    background-color: transparent;
-    border-radius: 10px;
-    outline: 2px solid #d2d2d2;
+    gap: 8px;
+    width: 120px;
+    height: 90px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     text-decoration: none;
-    color: #d2d2d2;
-    transition: transform 0.3s ease;
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
 }
 
 .contact-card:hover {
     transform: translateY(-5px);
-    color: white;
+    color: rgb(100, 200, 255);
+    border-color: rgba(100, 200, 255, 0.4);
+    box-shadow: 0 10px 30px rgba(100, 200, 255, 0.2);
+    background: linear-gradient(135deg, rgba(100, 200, 255, 0.15) 0%, rgba(100, 200, 255, 0.05) 100%);
 }
 
-.contact-card i {
-    font-size: 32px;
-    margin-bottom: 10px;
+.contact-card svg {
+    transition: all 0.3s ease;
+}
+
+.contact-card:hover svg {
+    transform: scale(1.1);
 }
 
 .contact-card span {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 #tel:hover {
     cursor: pointer;
+}
+
+/* Footer space */
+main::after {
+    content: '';
+    display: block;
+    height: 50px;
 }
